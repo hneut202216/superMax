@@ -1,0 +1,49 @@
+version: "3"
+services:
+  web:
+    image: nginx:latest
+    container_name: web
+    hostname: web
+    command: >
+      /bin/bash -c "apt-get update && apt-get upgrade -y && apt-get install -y apt-utils && apt install -y certbot python3-certbot-nginx && nginx -g 'daemon off;'"
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./html:/var/www/html
+      - ./certificate/:/etc/letsencrypt/
+    networks:
+      - api_network
+  php:
+    build: .
+    image: php-test
+    container_name: php
+    hostname: php
+    environment:
+      MYSQL_DATABASE: ${DATABASE}
+      MYSQL_USER: ${PHP_USER}
+      MYSQL_PASSWORD: ${PHP_PASS}
+      MYSQL_HOST: ${PHP_HOST}
+    volumes:
+      - ./html:/var/www/html
+    networks:
+      - api_network
+      - db_network
+  db:
+    image: mariadb:10.5
+    container_name: db
+    hostname: db
+    environment:
+      MYSQL_ROOT_PASSWORD: ${ROOT_PASS}
+      MYSQL_DATABASE: ${DATABASE}
+      MYSQL_USER: ${USER_DB}
+      MYSQL_PASSWORD: ${USER_PASS}
+    volumes:
+      - ./db/sql:/docker-entrypoint-initdb.d
+      - ./db/conf/my-resolve.cnf:/etc/mysql/conf.d/my-resolve.cnf
+    networks:
+      - db_network 
+networks:
+  api_network:
+  db_network:

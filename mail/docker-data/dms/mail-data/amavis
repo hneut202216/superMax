@@ -1,0 +1,21 @@
+From amavis@mail.l2-1.ephec-ti.be  Sun Apr 14 18:18:05 2024
+Return-Path: <amavis@mail.l2-1.ephec-ti.be>
+X-Original-To: amavis
+Delivered-To: amavis@mail.l2-1.ephec-ti.be
+Received: by mail.l2-1.ephec-ti.be (Postfix, from userid 110)
+	id AACD185D86; Sun, 14 Apr 2024 18:18:05 +0000 (UTC)
+From: root@mail.l2-1.ephec-ti.be (Cron Daemon)
+To: amavis@mail.l2-1.ephec-ti.be
+Subject: Cron <amavis@mail> test -e /usr/sbin/amavisd-new-cronjob && /usr/sbin/amavisd-new-cronjob sa-sync
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Cron-Env: <SHELL=/bin/sh>
+X-Cron-Env: <HOME=/var/lib/amavis>
+X-Cron-Env: <PATH=/usr/bin:/bin>
+X-Cron-Env: <LOGNAME=amavis>
+Message-Id: <20240414181805.AACD185D86@mail.l2-1.ephec-ti.be>
+Date: Sun, 14 Apr 2024 18:18:05 +0000 (UTC)
+
+config: created user preferences file: /var/lib/amavis/.spamassassin/user_prefs
+

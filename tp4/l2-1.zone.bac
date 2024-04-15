@@ -1,0 +1,15 @@
+$TTL 3600 ; Time To Live
+
+@               IN      SOA     ns.l2-1.ephec-ti.be. admin.example.com. (
+                                2023010101 ; Numéro de série (YYYYMMDDVV)
+                                3600       ; Refresh (1 heure)
+                                1800       ; Retry (30 minutes)
+                                604800     ; Expire (7 jours)
+                                3600 )     ; TTL (1 heure)
+
+; Définition des serveurs de noms
+l2-1            IN      NS      ns.l2-1.ephec-ti.be.
+
+; Définition des adresses IP des serveurs de noms
+ns.l2-1         IN      A       1.2.3.4
+

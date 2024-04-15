@@ -1,0 +1,177 @@
+Return-Path: <x.dubruille@ephec.be>
+Delivered-To: hneut@l2-1.ephec-ti.be
+Received: from mail.l2-1.ephec-ti.be
+	by mail.l2-1.ephec-ti.be with LMTP
+	id zaEXDoImHWbRdgAA1srq+w
+	(envelope-from <x.dubruille@ephec.be>)
+	for <hneut@l2-1.ephec-ti.be>; Mon, 15 Apr 2024 13:07:14 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by mail.l2-1.ephec-ti.be (Postfix) with ESMTP id 3009286090
+	for <hneut@l2-1.ephec-ti.be>; Mon, 15 Apr 2024 13:07:14 +0000 (UTC)
+Received-SPF: Pass (mailfrom) identity=mailfrom; client-ip=40.107.15.108; helo=eur01-db5-obe.outbound.protection.outlook.com; envelope-from=x.dubruille@ephec.be; receiver=<UNKNOWN> 
+Authentication-Results: mail.l2-1.ephec-ti.be; dmarc=pass (p=none dis=none) header.from=ephec.be
+Authentication-Results: mail.l2-1.ephec-ti.be;
+	dkim=pass (2048-bit key; unprotected) header.d=ephec.be header.i=@ephec.be header.a=rsa-sha256 header.s=selector2 header.b=edtnfz3X;
+	dkim-atps=neutral
+Received: from EUR01-DB5-obe.outbound.protection.outlook.com (mail-db5eur01on2108.outbound.protection.outlook.com [40.107.15.108])
+	by mail.l2-1.ephec-ti.be (Postfix) with ESMTPS id 94D878608A
+	for <hneut@l2-1.ephec-ti.be>; Mon, 15 Apr 2024 13:07:09 +0000 (UTC)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=g0AWrIlaUTR5cU0oEwVqKmP8k6IVa40XUk4ZyForLaUgZ+CaNoD/WV0dhVRoKd3i7USLDu1z24Xt54QhQjXHlRCCMnQgjncStmmdsFAnQjaL9gNOGaVm4U0Tk2CUA4jfr6GM5/l3blP03h1FMSMAqoF96QrckDHNVAAxFPtfv+Izr0sHq00AICesVwZf9Iu/2LWVdBombaJv8AeNVSEi9XV33HtsGGgvey85AL95f+/9zZk2yhmYGTajE92BT0G1Iu3OcZTdTrifFeMxQVosRLF/YdyxlCeLMyhWHcmyWR0zjqwzxBlmRAXF0JEPQPoSIj6LnWR7KivEMqcTpTvJHw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=2d3xPHWRqRN7q4B0/673ceHbxBMEE/HcdT8iw1G4Hbc=;
+ b=K1OIeRIbYdpKkvkNecpmpqNAYKJDqQne5ccHL10rXYU6eDAW5BAfNTIs8BG9g3HM7VTgTlJhndqN+cYevvOZEusp00x5DwTwcKQRbX7W6bhpG5E48gfXVjlUi0gcGZMDLe6800Za5i9Zv/kqsniA8k2auRMVIWZqi64hpcbjdBDYg1VtLK8mrj4wX/SojmXVJK/5NZyh2kXtOkB4OMHs6MBsYctGcZMq2nNoV+W5XdzO+MYh4GU3fe7+imPZ97L5G5Jhy/iNWlTlXNJu7oO+9ndakg4Rai/Fa4Fz0tf7ej1jf8+CTR+MfxeGq7n1g5dJfXKTrFO5xY8jNuVcaNLwAg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=ephec.be; dmarc=pass action=none header.from=ephec.be;
+ dkim=pass header.d=ephec.be; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ephec.be; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2d3xPHWRqRN7q4B0/673ceHbxBMEE/HcdT8iw1G4Hbc=;
+ b=edtnfz3XLf3dpVCKYqIK1Qbg/I/MIwI574cvyEzpdfkPr4RxkSXVJheCxEgC5WGi2PyUfNaMJCc2T1sb+U6DKr1BXpf/eBvsdyrMSUpWb0EP7/4vibMzhbA/eI60DIgkFb5MIdhBv0offvZiB631rU+CQUauGkR92KBUZWE1lfc89U0RFNhmpka/ANyj/fbYrKWgX5W1dxGkhW5QISMzhJHE9dhuEacxOJ1u3GESaPfN1//GI6b03sAi/M2yRqUC5RM5BQV/6iqcQOEPyuQcR1cckvSfnUUkgBw2J9qIHBWU0ga3SVeG2Yg/jE6s6HeD29Y8nlNg5znViRzcS8+eyA==
+Received: from DB9PR05MB8936.eurprd05.prod.outlook.com (2603:10a6:10:36f::5)
+ by DBAPR05MB7143.eurprd05.prod.outlook.com (2603:10a6:10:187::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.50; Mon, 15 Apr
+ 2024 13:07:00 +0000
+Received: from DB9PR05MB8936.eurprd05.prod.outlook.com
+ ([fe80::703b:6096:68c6:dd81]) by DB9PR05MB8936.eurprd05.prod.outlook.com
+ ([fe80::703b:6096:68c6:dd81%7]) with mapi id 15.20.7452.041; Mon, 15 Apr 2024
+ 13:06:47 +0000
+From: DUBRUILLE Xavier <x.dubruille@ephec.be>
+To: hugo neut <hneut@l2-1.ephec-ti.be>
+Subject: =?iso-8859-1?Q?RE:_[Admin_II_-_D=E9mo_mail_groupe_l2-1]?=
+Thread-Topic: =?iso-8859-1?Q?[Admin_II_-_D=E9mo_mail_groupe_l2-1]?=
+Thread-Index: AQHajrlSUMNY78rL3kunQDgSKYWK17FpTgJd
+Date: Mon, 15 Apr 2024 13:06:47 +0000
+Message-ID:
+ <DB9PR05MB89364B3B0559E81A56C1EC4786092@DB9PR05MB8936.eurprd05.prod.outlook.com>
+References: <f15924c5-a9f4-436b-9e1a-2d652822d59f@l2-1.ephec-ti.be>
+In-Reply-To: <f15924c5-a9f4-436b-9e1a-2d652822d59f@l2-1.ephec-ti.be>
+Accept-Language: fr-BE, fr-FR, en-US
+Content-Language: fr-BE
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+msip_labels:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=ephec.be;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DB9PR05MB8936:EE_|DBAPR05MB7143:EE_
+x-ms-office365-filtering-correlation-id: 9bbf64f9-d532-4490-9dce-08dc5d4ce84d
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ j7t7eQ1CJcoJgTqqOeKlN/5jI94BnWmo0+AuA7XKXlSeXBySM4LZD00/DL0hOpfok4t6AK+6+ngCYQwEx5kWSVvAZPnoQVSWoBfO+IdheA8r5ZJvOosXkR+ZIq0dm15bGuJp/p+8+ygJ3ZDj9Gnopp9NHuOHW0ottSY8gO/4w8WzXvOB6yoRtGhP4HoAWB/Non7FumjgWVwh58AWSbtXZc/qAlfO8Qjy6S2+0QVrCCjyryuzSXVbJjVkJaQPwJcSu8dw1CcaC8uei/fNMsK+dPBgJXAZZYN4ebNDUxDZ1zuSAVn7oVNu4Iov5JbN2cIGN4B5TLjrr4eRQOpGoSAu2FH7UqPmnsf8lgGcuIxUHR/aI+yugcSuZmLC8+NCGTDhMheRoBFZv7kwRyBDHiL8AmdJTYNbwyFATy4v+UrwmzumAYpa/YgtJhrnY6lkvrHpZM7i57axYqvvP8kPy2rhy0zIqjigTZPDz55sbhG2qIGCjBH3kGTKFLrLke2kUCiuJjLbBOr/P0qzGkVrC9wLYZcED8hQiqOAp2fgVGM3PUAot1tTD+GNbZFGmAmrPPrYNIEBgRtjDD1bXaeWkKXHBWGJTuU+YSozJNudQJhieV+Vq+CqgrGOa1kDWRaYS1yVFECp8L5YqfEKAdqtigULc8z0YCwSeXYQL/d3/ZDD7O8Pbz1vO8HOXGjhoIBbBbZZl1xuI17vJ6qulRefol1HGw==
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:fr;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR05MB8936.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005)(41320700004)(38070700009);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?iso-8859-1?Q?NpXAsehNrsbPtxRmuHWE4nWdp6K8V0ByJjidub8kXxKfuHoKQxDrf9Vkyb?=
+ =?iso-8859-1?Q?ASlg4HlxOkHiLQ3i7uJ0Xp8R56mKCr8ryUU+k2RGAmJrQZVKMRsOv8/8JG?=
+ =?iso-8859-1?Q?S+tc1CMwG2AqKOXCUoCSJZn6y6xAY2yMmp6zlMopWyaytgf6uWK+sf0JXk?=
+ =?iso-8859-1?Q?z5f4swcki7OqGAzLRyRM1RgYY4NHxu32lt7Gk782yvQfUKYGOu3/vfdMmE?=
+ =?iso-8859-1?Q?eiJCUMZ4hUrgMtFsIaJgFfSobdNP/mJWA+8Khzeu3B64cb0/c6pCA6f2v8?=
+ =?iso-8859-1?Q?3vmhho2IL8AT6VM0iOZ12BpwdXEqfUqd7CWQ+dkjLBTT6xSwEP1daEnbaZ?=
+ =?iso-8859-1?Q?+3EdOdcL/wHtytrBcR1P3723bkNCuzGqf40wOQH75xpyUhAIMaG9ZyaEkE?=
+ =?iso-8859-1?Q?gTgF0d6p7p7XE4/nMj40eZEwnjSY5DXIv2QByN/hafx6ZVmYRSi2cZdh36?=
+ =?iso-8859-1?Q?ZTZfqwbes1/bO3vVGrJ1TE93YiBuvP5wp6/Q/mw3WsloViOdmhdtcW8oZ7?=
+ =?iso-8859-1?Q?cAWyfbitTYnEOiflAVda6m99kQf9YJEkvxYHxu+eX2mFTwiRNjqUGrKGKC?=
+ =?iso-8859-1?Q?4MyFdjliYn7Ho7w4OCIE9a4dcQFLggfUviMVG9dDpLF6tI8+BA2ajHsCFv?=
+ =?iso-8859-1?Q?7SxZ1mZZ1eiSvu5gmz5gAq9KlKpeKBc3pZbO7jzYpVMYt1aReMEXIE8IdG?=
+ =?iso-8859-1?Q?fNZCHQM2u38iViqRye6qf0Niv1nbFSrtAe8B5Ph4RRyXvc+KTGre7EtWf6?=
+ =?iso-8859-1?Q?D6iOU/Qgvp024+LfAsSssByTj40s04EAkqnC3G3I5t2PFN/yN+3cCJZ5Xb?=
+ =?iso-8859-1?Q?lTPH3fgEpMvA/i5x8zUzEg2hrGKfXcseAPOmBHS9sK6M5nP7VYM/6mlVza?=
+ =?iso-8859-1?Q?rZS5wu3FflnmJTdpmzSUu2en1dNFn4biub4qefTG02o8pn3gDccT8t5myg?=
+ =?iso-8859-1?Q?oFU3Oqo3glkP0OWJrwDJlqMDoesErKL36GRvlJbJRgDGPyqoFsAy1mYYIu?=
+ =?iso-8859-1?Q?WOemOheGHrj7OqOIdKDvQEkEXrlqYd0BPuooOSTNKskZYHvqTHg/eQa1SU?=
+ =?iso-8859-1?Q?ILbuPF9Mipedx6Yyu9/VB7FFyQSr+t3UKQWdUR5gLf2tKT02r3mti8Fi4b?=
+ =?iso-8859-1?Q?naw2EymFGGkSWaTUDMZaG0/dCH7fBSCTCxpZgYOxnMI6AtECG6Kjn6Wcsg?=
+ =?iso-8859-1?Q?Ga0O0wFFWm02YIbpSjlLkzeQqA4oq1R/o+sW0pEOtSvDyXvaj36qtdE8DC?=
+ =?iso-8859-1?Q?MtEScxWf+1j7YxwamNznSCy7BS0NKE41mXazl9/ay6+jcLM2yVeYy7Y54b?=
+ =?iso-8859-1?Q?4oAmCP70sU54Jba72mzId9JY5YCcoRiK91L7cH/tyVaBiHxyj2hyuGhcP0?=
+ =?iso-8859-1?Q?WT4rVZlcWg9ZnCQPK2pz/a75BIFcUjRpeE3yKrpN4fw31bxEGlpgnYkNTU?=
+ =?iso-8859-1?Q?R8l9rn3VhKpaj2ECUUe0jPLY6Zv/aX/faAC5JOtRmBYYneVSC8y6b/aJxl?=
+ =?iso-8859-1?Q?j9Jw3+FfTjrBELUiUgXA03puY9/Z570Vx/lsGNWWeBiBi5iM9H6JkDe6zm?=
+ =?iso-8859-1?Q?vgB5fq13hRel53nzd/foGt9c7Hb6lg2TsTqehsJfLW6YDVv6KAjzQE5Urg?=
+ =?iso-8859-1?Q?8ElLWczJ6PeCk8bVJO9kx2YxfoqNQE0F9W?=
+Content-Type: multipart/alternative;
+	boundary="_000_DB9PR05MB89364B3B0559E81A56C1EC4786092DB9PR05MB8936eurp_"
+MIME-Version: 1.0
+X-OriginatorOrg: ephec.be
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB9PR05MB8936.eurprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9bbf64f9-d532-4490-9dce-08dc5d4ce84d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Apr 2024 13:06:47.5778
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 21936fc0-be19-4e1b-ad89-4def5c23b4cb
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: DgCxfbh3gzNCJrKRmup6K6wxhaZmcxAEkTxGjV51zGFIHLb6ofihep1MkkezsSI3ZsA+p944ok6rjTkhP/PbIQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBAPR05MB7143
+
+--_000_DB9PR05MB89364B3B0559E81A56C1EC4786092DB9PR05MB8936eurp_
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+Chaussettte !
+________________________________
+De : hugo neut <hneut@l2-1.ephec-ti.be>
+Envoy=E9 : lundi 15 avril 2024 00:15
+=C0 : DUBRUILLE Xavier <x.dubruille@ephec.be>
+Objet : [Admin II - D=E9mo mail groupe l2-1]
+
+Bonjour monsieurs,
+
+Nous vous envoyons un mail depuis notre serveur mail pour vous faire
+parvenir que le TP7 a bien =E9t=E9 termin=E9.
+
+Cordialement,
+
+Hugo , Weili , S=E9bastien (l2-1)
+
+
+--_000_DB9PR05MB89364B3B0559E81A56C1EC4786092DB9PR05MB8936eurp_
+Content-Type: text/html; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<html>
+<head>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Diso-8859-=
+1">
+<style type=3D"text/css" style=3D"display:none;"> P {margin-top:0;margin-bo=
+ttom:0;} </style>
+</head>
+<body dir=3D"ltr">
+<div class=3D"elementToProof" style=3D"font-family: Aptos, Aptos_EmbeddedFo=
+nt, Aptos_MSFontService, Calibri, Helvetica, sans-serif; font-size: 12pt; c=
+olor: rgb(0, 0, 0);">
+Chaussettte !</div>
+<div id=3D"appendonsend"></div>
+<hr style=3D"display:inline-block;width:98%" tabindex=3D"-1">
+<div id=3D"divRplyFwdMsg" dir=3D"ltr"><font face=3D"Calibri, sans-serif" st=
+yle=3D"font-size:11pt" color=3D"#000000"><b>De :</b> hugo neut &lt;hneut@l2=
+-1.ephec-ti.be&gt;<br>
+<b>Envoy=E9 :</b> lundi 15 avril 2024 00:15<br>
+<b>=C0 :</b> DUBRUILLE Xavier &lt;x.dubruille@ephec.be&gt;<br>
+<b>Objet :</b> [Admin II - D=E9mo mail groupe l2-1]</font>
+<div>&nbsp;</div>
+</div>
+<div class=3D"BodyFragment"><font size=3D"2"><span style=3D"font-size:11pt;=
+">
+<div class=3D"PlainText">Bonjour monsieurs,<br>
+<br>
+Nous vous envoyons un mail depuis notre serveur mail pour vous faire <br>
+parvenir que le TP7 a bien =E9t=E9 termin=E9.<br>
+<br>
+Cordialement,<br>
+<br>
+Hugo , Weili , S=E9bastien (l2-1)<br>
+<br>
+</div>
+</span></font></div>
+</body>
+</html>
+
+--_000_DB9PR05MB89364B3B0559E81A56C1EC4786092DB9PR05MB8936eurp_--

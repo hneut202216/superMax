@@ -1,0 +1,94 @@
+Return-Path: <>
+Delivered-To: hneut@l2-1.ephec-ti.be
+Received: from mail.l2-1.ephec-ti.be
+	by mail.l2-1.ephec-ti.be with LMTP
+	id 8bYqHZ82HGZZEwAA1srq+w
+	(envelope-from <>)
+	for <hneut@l2-1.ephec-ti.be>; Sun, 14 Apr 2024 20:03:43 +0000
+Received: by mail.l2-1.ephec-ti.be (Postfix)
+	id 70B5E85DC4; Sun, 14 Apr 2024 20:03:43 +0000 (UTC)
+Date: Sun, 14 Apr 2024 20:03:43 +0000 (UTC)
+From: MAILER-DAEMON@mail.l2-1.ephec-ti.be (Mail Delivery System)
+Subject: Undelivered Mail Returned to Sender
+To: hneut@l2-1.ephec-ti.be
+Auto-Submitted: auto-replied
+MIME-Version: 1.0
+Content-Type: multipart/report; report-type=delivery-status;
+	boundary="5D58C85DC1.1713125023/mail.l2-1.ephec-ti.be"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240414200343.70B5E85DC4@mail.l2-1.ephec-ti.be>
+
+This is a MIME-encapsulated message.
+
+--5D58C85DC1.1713125023/mail.l2-1.ephec-ti.be
+Content-Description: Notification
+Content-Type: text/plain; charset=us-ascii
+
+This is the mail system at host mail.l2-1.ephec-ti.be.
+
+I'm sorry to have to inform you that your message could not
+be delivered to one or more recipients. It's attached below.
+
+For further assistance, please send mail to postmaster.
+
+If you do so, please include this problem report. You can
+delete your own text from the attached returned message.
+
+                   The mail system
+
+<hugo.neut04@gmail.com>: host gmail-smtp-in.l.google.com[108.177.15.26] said:
+    550-5.7.26 This mail has been blocked because the sender is
+    unauthenticated. 550-5.7.26 Gmail requires all senders to authenticate with
+    either SPF or DKIM. 550-5.7.26  550-5.7.26  Authentication results:
+    550-5.7.26  DKIM = did not pass 550-5.7.26  SPF [l2-1.ephec-ti.be] with ip:
+    [54.37.15.208] = did not pass 550-5.7.26  550-5.7.26  For instructions on
+    setting up authentication, go to 550 5.7.26
+    https://support.google.com/mail/answer/81126#authentication
+    n12-20020a05600c3b8c00b00416b173fec0si4877603wms.175 - gsmtp (in reply to
+    end of DATA command)
+
+--5D58C85DC1.1713125023/mail.l2-1.ephec-ti.be
+Content-Description: Delivery report
+Content-Type: message/delivery-status
+
+Reporting-MTA: dns; mail.l2-1.ephec-ti.be
+X-Postfix-Queue-ID: 5D58C85DC1
+X-Postfix-Sender: rfc822; hneut@l2-1.ephec-ti.be
+Arrival-Date: Sun, 14 Apr 2024 20:03:42 +0000 (UTC)
+
+Final-Recipient: rfc822; hugo.neut04@gmail.com
+Original-Recipient: rfc822;hugo.neut04@gmail.com
+Action: failed
+Status: 5.7.26
+Remote-MTA: dns; gmail-smtp-in.l.google.com
+Diagnostic-Code: smtp; 550-5.7.26 This mail has been blocked because the sender
+    is unauthenticated. 550-5.7.26 Gmail requires all senders to authenticate
+    with either SPF or DKIM. 550-5.7.26  550-5.7.26  Authentication results:
+    550-5.7.26  DKIM = did not pass 550-5.7.26  SPF [l2-1.ephec-ti.be] with ip:
+    [54.37.15.208] = did not pass 550-5.7.26  550-5.7.26  For instructions on
+    setting up authentication, go to 550 5.7.26
+    https://support.google.com/mail/answer/81126#authentication
+    n12-20020a05600c3b8c00b00416b173fec0si4877603wms.175 - gsmtp
+
+--5D58C85DC1.1713125023/mail.l2-1.ephec-ti.be
+Content-Description: Undelivered Message
+Content-Type: message/rfc822
+
+Return-Path: <hneut@l2-1.ephec-ti.be>
+Received: from localhost (localhost [127.0.0.1])
+	by mail.l2-1.ephec-ti.be (Postfix) with ESMTP id 5D58C85DC1
+	for <hugo.neut04@gmail.com>; Sun, 14 Apr 2024 20:03:42 +0000 (UTC)
+Message-ID: <ac67ebae-63ee-476d-984c-f88472be79fa@l2-1.ephec-ti.be>
+Date: Sun, 14 Apr 2024 22:03:42 +0200
+MIME-Version: 1.0
+Content-Language: fr
+To: hugo.neut04@gmail.com
+From: hugo neut <hneut@l2-1.ephec-ti.be>
+Subject: teste
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+
+coucou les ptits loup
+
+
+--5D58C85DC1.1713125023/mail.l2-1.ephec-ti.be--

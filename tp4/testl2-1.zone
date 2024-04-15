@@ -1,0 +1,24 @@
+$ORIGIN ephec-ti.be.
+$TTL 86400 
+@    IN    SOA    soa.woodytoys.lab.    hostmaster.woodytoys.lab. (
+            2001062501 ; serial
+            21600      ; refresh after 6 hours
+            3600       ; retry after 1 hour
+            604800     ; expire after 1 week
+            86400 )    ; minimum TTL of 1 day
+
+
+    IN    NS    soa.woodytoys.lab.
+    IN      NS    resolv.woodytoys.lab.
+
+    IN    MX    10    mail.woodytoys.lab.
+
+
+
+soa    IN    A    192.168.0.2
+resolv    IN    A    192.168.0.1
+dhcp    IN    A    192.168.0.3
+www     IN     A    192.168.0.4
+mail    IN    A    192.168.0.5
+blog    IN      CNAME   www
+testeSup IN     CNAME   www

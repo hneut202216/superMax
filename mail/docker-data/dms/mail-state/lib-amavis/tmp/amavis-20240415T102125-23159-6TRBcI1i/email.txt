@@ -1,0 +1,22 @@
+Message-ID: <940fac32-b06e-4888-852c-95fe2c5cc06c@l2-1.ephec-ti.be>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=l2-1.ephec-ti.be;
+	s=mail; t=1713176485;
+	bh=Q5Q+YZ9Ie9YLfLDknt/3+vqDfEvg9KrudD3QSa6JEjQ=; h=To:From:Subject;
+	b=JMZrehgLdw+OTBBV0FR/HT4X6ZSOEE3R8ob7vHZrT28TeRulnu9lIwumVEeRn92VS
+	 h7FPT/lNLzkbQ3PYn+bd3PsynKZgjOo84Qgg9xuOYlx4ZkY2zrW6OZIDqEJAGZPZzO
+	 CoZ9geqhLDtMX/Ui4R1yLuM6DV3vYPVukLyg+HpYti1LkXrrIwOTdxRIhJTOeTqaGQ
+	 ahvOGozJ5UfhBrc+YR+HKmWNc4Ivj15EKMbAskEUJFlZVz7QH39L//nDGhMFVojEMv
+	 qC5l9OOdg9yEHO4RF/jobBuLh8IQ+y7fYXzVVlhZEgcwRcBxW7zKUACicbFRxNtTQt
+	 kxtJ7A7u2536Q==
+Date: Mon, 15 Apr 2024 12:21:24 +0200
+MIME-Version: 1.0
+Content-Language: fr
+To: hugo.neut04@gmail.com
+From: hugo neut <hneut@l2-1.ephec-ti.be>
+Subject: coucou
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+
+x ejzacbeuzbvcuzi teiyb
+
+

@@ -1,0 +1,48 @@
+version: "3"
+services:
+  web:
+    image: nginx:1.19.0
+    container_name: web
+    hostname: web
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./html:/var/www/html
+      - ./zone/fullchain.pem:/etc/letsencrypt/archive/l2-1.ephec-ti.be/fullchain.pem
+      - ./zone/privkey.pem:/etc/letsencrypt/archive/l2-1.ephec-ti.be/privkey.pem
+    networks:
+      - api_network
+  php:
+    build: .
+    image: php-test
+    container_name: php
+    hostname: php
+    environment:
+      MYSQL_DATABASE: ${DATABASE}
+      MYSQL_USER: ${PHP_USER}
+      MYSQL_PASSWORD: ${PHP_PASS}
+      MYSQL_HOST: ${PHP_HOST}
+    volumes:
+      - ./html:/var/www/html
+    networks:
+      - api_network
+      - db_network
+  db:
+    image: mariadb:10.5
+    container_name: db
+    hostname: db
+    environment:
+      MYSQL_ROOT_PASSWORD: ${ROOT_PASS}
+      MYSQL_DATABASE: ${DATABASE}
+      MYSQL_USER: ${USER_DB}
+      MYSQL_PASSWORD: ${USER_PASS}
+    volumes:
+      - ./db/sql:/docker-entrypoint-initdb.d
+      - ./db/conf/my-resolve.cnf:/etc/mysql/conf.d/my-resolve.cnf
+    networks:
+      - db_network 
+networks:
+  api_network:
+  db_network:

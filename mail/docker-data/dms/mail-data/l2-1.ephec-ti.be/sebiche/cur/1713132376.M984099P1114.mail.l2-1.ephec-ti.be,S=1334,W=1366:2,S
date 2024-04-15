@@ -1,0 +1,32 @@
+Return-Path: <hneut@l2-1.ephec-ti.be>
+Delivered-To: sebiche@l2-1.ephec-ti.be
+Received: from mail.l2-1.ephec-ti.be
+	by mail.l2-1.ephec-ti.be with LMTP
+	id uwSJOlhTHGZaBAAA1srq+w
+	(envelope-from <hneut@l2-1.ephec-ti.be>)
+	for <sebiche@l2-1.ephec-ti.be>; Sun, 14 Apr 2024 22:06:16 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by mail.l2-1.ephec-ti.be (Postfix) with ESMTP id E64AA85FB4
+	for <sebiche@l2-1.ephec-ti.be>; Sun, 14 Apr 2024 22:06:16 +0000 (UTC)
+Message-ID: <ce6e128e-78b0-4a80-b064-f171871d292a@l2-1.ephec-ti.be>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=l2-1.ephec-ti.be;
+	s=mail; t=1713132375;
+	bh=6lu0kkBykjppq5V3xlAfHfRhK3yZu4vxSn41vh3ze4E=; h=To:From:Subject;
+	b=PThT+DrCmz5f6vqwws4FyONq72GlomlFirGqVqIh3XHqvWpYF8/GAkK6m8KwWbFfw
+	 BfL5tH4ZWz1TbQIEwDrnht+xwdTf1zctEyaOgwVyBFeP0xDGNovezrPU72k3sI5YbE
+	 8iwDYBPmZR+rtWtS5pjToBcjFvsCma1Z8T4DnEjza5bM30pwFK8ZLi0m4KkACzPsJ8
+	 NwJddVcMxZn/2uWXA/fbeIHzm87AYktGHYeLFi3VODqki2uJ1SnEgORuduYBrvQ7OU
+	 +it0iYITKDx9UHpPEnnRB0jHGx4l6V/alxdwPjLzKpcAeXq87sp9bbcrPDQ1KCt7WM
+	 1GY7it2lf1+Aw==
+Date: Mon, 15 Apr 2024 00:06:15 +0200
+MIME-Version: 1.0
+Content-Language: fr
+To: sebiche@l2-1.ephec-ti.be
+From: hugo neut <hneut@l2-1.ephec-ti.be>
+Subject: test
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+
+teste entete mon loup
+
+
