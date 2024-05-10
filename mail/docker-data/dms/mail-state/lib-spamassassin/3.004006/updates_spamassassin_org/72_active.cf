@@ -337,12 +337,6 @@ meta   AXB_XMAILER_MIMEOLE_OL_024C2  (__AXB_XM_OL_024C2 && __AXB_MO_OL_024C2)
 describe AXB_XMAILER_MIMEOLE_OL_024C2 Yet another X header trait
 ##} AXB_XMAILER_MIMEOLE_OL_024C2
 
-##{ AXB_X_FF_SEZ_S
-
-header          AXB_X_FF_SEZ_S          X-Forefront-Antispam-Report =~ /\bSFV\:SPM\b/
-describe        AXB_X_FF_SEZ_S          Forefront sez this is spam
-##} AXB_X_FF_SEZ_S
-
 ##{ BANKING_LAWS
 
 body		BANKING_LAWS	/banking laws/i
@@ -789,14 +783,6 @@ endif
 body CURR_PRICE         /\bCurrent Price:/
 ##} CURR_PRICE
 
-##{ DATE_IN_FUTURE_Q_PLUS ifplugin Mail::SpamAssassin::Plugin::HeaderEval
-
-ifplugin Mail::SpamAssassin::Plugin::HeaderEval
-header   DATE_IN_FUTURE_Q_PLUS  eval:check_for_shifted_date('2920', 'undef')
-describe DATE_IN_FUTURE_Q_PLUS  Date: is over 4 months after Received: date
-endif
-##} DATE_IN_FUTURE_Q_PLUS ifplugin Mail::SpamAssassin::Plugin::HeaderEval
-
 ##{ DAY_I_EARNED if can(Mail::SpamAssassin::Conf::feature_bug6558_free)
 
 if can(Mail::SpamAssassin::Conf::feature_bug6558_free)
@@ -1101,6 +1087,14 @@ ifplugin Mail::SpamAssassin::Plugin::ReplaceTags
   tflags   FILL_THIS_FORM                 publish
 endif
 ##} FILL_THIS_FORM ifplugin Mail::SpamAssassin::Plugin::ReplaceTags
+
+##{ FILL_THIS_FORM_FRAUD_PHISH ifplugin Mail::SpamAssassin::Plugin::ReplaceTags
+
+ifplugin Mail::SpamAssassin::Plugin::ReplaceTags
+  meta     FILL_THIS_FORM_FRAUD_PHISH     __FILL_THIS_FORM_FRAUD_PHISH && !__SPOOFED_URL && !__VIA_ML && !__HAS_IN_REPLY_TO && !__THREADED && !__HDR_RCVD_SHOPIFY && !__HAS_ERRORS_TO 
+  describe FILL_THIS_FORM_FRAUD_PHISH     Answer suspicious question(s)
+endif
+##} FILL_THIS_FORM_FRAUD_PHISH ifplugin Mail::SpamAssassin::Plugin::ReplaceTags
 
 ##{ FILL_THIS_FORM_LOAN ifplugin Mail::SpamAssassin::Plugin::ReplaceTags
 
@@ -1407,13 +1401,6 @@ meta           FROM_MISSP_MSFT       __FROM_RUNON && (__ANY_OUTLOOK_MUA || __MIM
 describe       FROM_MISSP_MSFT       From misspaced + supposed Microsoft tool
 ##} FROM_MISSP_MSFT
 
-##{ FROM_MISSP_PHISH
-
-meta        FROM_MISSP_PHISH     __FROM_MISSP_PHISH && !__DOS_HAS_LIST_UNSUB 
-describe    FROM_MISSP_PHISH     Malformed, claims to be from financial organization - possible phish
-#score       FROM_MISSP_PHISH     3.500	# limit
-##} FROM_MISSP_PHISH
-
 ##{ FROM_MISSP_REPLYTO
 
 meta           FROM_MISSP_REPLYTO    __FROM_MISSP_REPLYTO && !__NOT_SPOOFED && !__RCD_RDNS_MTA_MESSY && !__TO___LOWER && !__COMMENT_EXISTS && !__UNSUB_LINK && !__MIME_QP && !__CTYPE_MULTIPART_ALT && !__JM_REACTOR_DATE && !__PLING_QUERY && !__DOS_HAS_LIST_UNSUB 
@@ -1429,12 +1416,6 @@ ifplugin Mail::SpamAssassin::Plugin::SPF
 #  score          FROM_MISSP_SPF_FAIL  2.00	# limit
 endif
 ##} FROM_MISSP_SPF_FAIL ifplugin Mail::SpamAssassin::Plugin::SPF
-
-##{ FROM_MISSP_TO_UNDISC
-
-meta           FROM_MISSP_TO_UNDISC  (__FROM_RUNON && __TO_UNDISCLOSED)
-describe       FROM_MISSP_TO_UNDISC  From misspaced, To undisclosed
-##} FROM_MISSP_TO_UNDISC
 
 ##{ FROM_MISSP_USER
 
@@ -1532,12 +1513,6 @@ describe FROM_SUSPICIOUS_NTLD_FP From abused NTLD
 endif
 endif
 ##} FROM_SUSPICIOUS_NTLD_FP if (version >= 3.004002) ifplugin Mail::SpamAssassin::Plugin::WLBLEval
-
-##{ FROM_UNBAL1
-
-header   FROM_UNBAL1	From:raw =~ / < [^>]* $/xm
-describe FROM_UNBAL1	From with unbalanced angle brackets, '>' missing
-##} FROM_UNBAL1
 
 ##{ FROM_UNBAL2
 
@@ -1831,6 +1806,13 @@ ifplugin Mail::SpamAssassin::Plugin::ReplaceTags
 endif
 ##} FUZZY_WELLSFARGO ifplugin Mail::SpamAssassin::Plugin::ReplaceTags
 
+##{ GAPPY_LOW_CONTRAST
+
+meta        GAPPY_LOW_CONTRAST    __GAPPY_LOW_CONTRAST && !__HAS_LIST_ID 
+describe    GAPPY_LOW_CONTRAST    Gappy subject + hidden text
+#score       GAPPY_LOW_CONTRAST    2.500   # limit
+##} GAPPY_LOW_CONTRAST
+
 ##{ GAPPY_SALES_LEADS_FREEM if can(Mail::SpamAssassin::Conf::feature_bug6558_free)
 
 if can(Mail::SpamAssassin::Conf::feature_bug6558_free)
@@ -1847,13 +1829,6 @@ meta     GB_BITCOIN_CP        ( __GB_BITCOIN_CP_DE || __GB_BITCOIN_CP_ES || __GB
 describe GB_BITCOIN_CP        Localized Bitcoin scam
 #score    GB_BITCOIN_CP        3.0 # limit
 ##} GB_BITCOIN_CP
-
-##{ GB_BITCOIN_NH
-
-meta     GB_BITCOIN_NH        ( __BITCOIN_ID && !__URL_BTC_ID && ( __NEVER_HEAR_EN || __NEVER_HEAR_IT ) )
-describe GB_BITCOIN_NH        Localized Bitcoin scam
-#score    GB_BITCOIN_NH        3.0 # limit
-##} GB_BITCOIN_NH
 
 ##{ GB_CUSTOM_HTM_URI if (version >= 4.000000) if can(Mail::SpamAssassin::Conf::feature_capture_rules)
 
@@ -2055,6 +2030,26 @@ describe   HAS_X_OUTGOING_SPAM_STAT    Has header claiming outbound spam scan - 
 #score      HAS_X_OUTGOING_SPAM_STAT    2.000	# limit
 tflags     HAS_X_OUTGOING_SPAM_STAT    publish
 ##} HAS_X_OUTGOING_SPAM_STAT
+
+##{ HDRS_LCASE
+
+describe       HDRS_LCASE            Odd capitalization of message header
+#score          HDRS_LCASE            0.10	# limit
+##} HDRS_LCASE
+
+##{ HDRS_LCASE if !plugin(Mail::SpamAssassin::Plugin::FreeMail)
+
+if !plugin(Mail::SpamAssassin::Plugin::FreeMail)
+  meta         HDRS_LCASE            __HDRS_LCASE && !__HDRS_LCASE_KNOWN && !__VIA_ML && !__THREADED && !__UNUSABLE_MSGID && !__DOS_SINGLE_EXT_RELAY && !__DKIM_EXISTS && !__BUGGED_IMG && !__SUBSCRIPTION_INFO && !NO_RELAYS && !__RDNS_NONE && !__MIME_BASE64 && !__SUBJECT_ENCODED_B64 && !__RCD_RDNS_MX_MESSY && !__HTML_LINK_IMAGE && !__RDNS_SHORT && !__TAG_EXISTS_STYLE && !ALL_TRUSTED && !__NOT_SPOOFED && !__RCD_RDNS_SMTP_MESSY && !__NAKED_TO
+endif
+##} HDRS_LCASE if !plugin(Mail::SpamAssassin::Plugin::FreeMail)
+
+##{ HDRS_LCASE ifplugin Mail::SpamAssassin::Plugin::FreeMail
+
+ifplugin Mail::SpamAssassin::Plugin::FreeMail
+  meta         HDRS_LCASE            __HDRS_LCASE && !__HDRS_LCASE_KNOWN && !__VIA_ML && !__freemail_safe && !__THREADED && !__UNUSABLE_MSGID && !__DOS_SINGLE_EXT_RELAY && !__DKIM_EXISTS && !__BUGGED_IMG && !__SUBSCRIPTION_INFO && !NO_RELAYS && !__RDNS_NONE && !__MIME_BASE64 && !__SUBJECT_ENCODED_B64 && !__RCD_RDNS_MX_MESSY && !__HTML_LINK_IMAGE && !__RDNS_SHORT && !__TAG_EXISTS_STYLE && !ALL_TRUSTED && !__NOT_SPOOFED && !__RCD_RDNS_SMTP_MESSY && !__NAKED_TO
+endif
+##} HDRS_LCASE ifplugin Mail::SpamAssassin::Plugin::FreeMail
 
 ##{ HDRS_LCASE_IMGONLY
 
@@ -2376,14 +2371,6 @@ describe  HTML_SINGLET_MANY             Many single-letter HTML format blocks
 tflags    HTML_SINGLET_MANY             publish
 ##} HTML_SINGLET_MANY
 
-##{ HTML_TAG_BALANCE_CENTER ifplugin Mail::SpamAssassin::Plugin::HTMLEval
-
-ifplugin Mail::SpamAssassin::Plugin::HTMLEval
-  meta       HTML_TAG_BALANCE_CENTER       __HTML_TAG_BALANCE_CENTER && !__RCD_RDNS_MAIL_MESSY && !__RCD_RDNS_SMTP_MESSY 
-  describe   HTML_TAG_BALANCE_CENTER       Malformatted HTML
-endif
-##} HTML_TAG_BALANCE_CENTER ifplugin Mail::SpamAssassin::Plugin::HTMLEval
-
 ##{ HTML_TEXT_INVISIBLE_FONT if can(Mail::SpamAssassin::Conf::feature_bug6558_free)
 
 if can(Mail::SpamAssassin::Conf::feature_bug6558_free)
@@ -2507,12 +2494,6 @@ describe KHOP_HELO_FCRDNS	Relay HELO differs from its IP's reverse DNS
 #score	 KHOP_HELO_FCRDNS	0.4 # 20090603
 ##} KHOP_HELO_FCRDNS
 
-##{ KHOP_UNSUB_EMAIL
-
-meta	 KHOP_UNSUB_EMAIL	!__UNSUB_LINK && (__UNSUB_EMAIL||__UNSUB_MAILTO)
-describe KHOP_UNSUB_EMAIL	Unsubscribe by email but not by link
-##} KHOP_UNSUB_EMAIL
-
 ##{ LINKEDIN_IMG_NOT_RCVD_LNKN
 
 meta       LINKEDIN_IMG_NOT_RCVD_LNKN  __LINKED_IMG_NOT_RCVD_LINK && !__LUNSUB_BEFORE_SUBJDT 
@@ -2520,13 +2501,6 @@ meta       LINKEDIN_IMG_NOT_RCVD_LNKN  __LINKED_IMG_NOT_RCVD_LINK && !__LUNSUB_B
 describe   LINKEDIN_IMG_NOT_RCVD_LNKN  Linkedin hosted image but message not from Linkedin
 tflags     LINKEDIN_IMG_NOT_RCVD_LNKN  publish
 ##} LINKEDIN_IMG_NOT_RCVD_LNKN
-
-##{ LIST_PARTIAL_SHORT_MSG
-
-meta       LIST_PARTIAL_SHORT_MSG       __LIST_PARTIAL_SHORT_MSG && !__DKIM_EXISTS
-describe   LIST_PARTIAL_SHORT_MSG       Incomplete mailing list headers + short message
-#score      LIST_PARTIAL_SHORT_MSG       2.500	# limit
-##} LIST_PARTIAL_SHORT_MSG
 
 ##{ LIST_PRTL_PUMPDUMP
 
@@ -2548,6 +2522,13 @@ tflags      LIST_PRTL_SAME_USER    publish
 
 uri  LIVEFILESTORE       m~livefilestore.com/~
 ##} LIVEFILESTORE
+
+##{ LONGLN_LOW_CONTRAST
+
+meta        LONGLN_LOW_CONTRAST   __LONGLN_LOW_CONTRAST && !ALL_TRUSTED && !__HAS_ERRORS_TO && !__TRAVEL_ITINERARY 
+describe    LONGLN_LOW_CONTRAST   Excessively long line + hidden text
+#score       LONGLN_LOW_CONTRAST   2.500   # limit
+##} LONGLN_LOW_CONTRAST
 
 ##{ LONG_HEX_URI
 
@@ -2763,6 +2744,11 @@ describe   MIXED_CENTER_CASE           Has center tag in mixed case
 tflags     MIXED_CENTER_CASE           publish
 ##} MIXED_CENTER_CASE
 
+##{ MIXED_CTYPE_CASE
+
+header     MIXED_CTYPE_CASE            Content-Type =~ m;^(?i:text/)(?!html|HTML)[Hh][Tt][Mm][Ll];
+##} MIXED_CTYPE_CASE
+
 ##{ MIXED_ES if can(Mail::SpamAssassin::Conf::feature_bug6558_free) ifplugin Mail::SpamAssassin::Plugin::ReplaceTags
 
 if can(Mail::SpamAssassin::Conf::feature_bug6558_free)
@@ -2840,6 +2826,13 @@ tflags         MONERO_PAY_ME          publish
 meta     MONEY_ATM_CARD   __MONEY_ATM_CARD && !__COMMENT_EXISTS && !__TAG_EXISTS_STYLE
 describe MONEY_ATM_CARD   Lots of money on an ATM card
 ##} MONEY_ATM_CARD
+
+##{ MONEY_BARRISTER
+
+meta     MONEY_BARRISTER  __BARRISTER && LOTS_OF_MONEY
+describe MONEY_BARRISTER  Lots of money from a UK lawyer
+#score    MONEY_BARRISTER  1.000   # limit
+##} MONEY_BARRISTER
 
 ##{ MONEY_FORM
 
@@ -3081,13 +3074,6 @@ describe PDS_BAD_THREAD_QP_64 Bad thread header - short QP
 #score    PDS_BAD_THREAD_QP_64 1.0
 ##} PDS_BAD_THREAD_QP_64
 
-##{ PDS_BRAND_SUBJ_NAKED_TO
-
-meta     PDS_BRAND_SUBJ_NAKED_TO __NAKED_TO && __PDS_TO_BRAND_SUBJECT && !MAILING_LIST_MULTI
-describe PDS_BRAND_SUBJ_NAKED_TO Subject starts with To: brand and naked To:
-#score    PDS_BRAND_SUBJ_NAKED_TO 1.0
-##} PDS_BRAND_SUBJ_NAKED_TO
-
 ##{ PDS_BTC_ID
 
 meta     PDS_BTC_ID __PDS_BTC_ID
@@ -3101,6 +3087,17 @@ meta     PDS_BTC_MSGID __PDS_BTC_ID && __MSGID_NOFQDN2
 describe PDS_BTC_MSGID Bitcoin ID with T_MSGID_NOFQDN2
 #score    PDS_BTC_MSGID 1.0
 ##} PDS_BTC_MSGID
+
+##{ PDS_BTC_NTLD if (version >= 3.004002) ifplugin Mail::SpamAssassin::Plugin::WLBLEval
+
+if (version >= 3.004002)
+ifplugin Mail::SpamAssassin::Plugin::WLBLEval
+meta     PDS_BTC_NTLD ( __BITCOIN_ID && __FROM_ADDRLIST_SUSPNTLD )
+describe PDS_BTC_NTLD Bitcoin suspect NTLD
+#score    PDS_BTC_NTLD 2.0 # limit
+endif
+endif
+##} PDS_BTC_NTLD if (version >= 3.004002) ifplugin Mail::SpamAssassin::Plugin::WLBLEval
 
 ##{ PDS_DBL_URL_TNB_RUNON
 
@@ -3122,6 +3119,15 @@ meta     PDS_FRNOM_TODOM_NAKED_TO __NAKED_TO && PDS_FROM_NAME_TO_DOMAIN
 describe PDS_FRNOM_TODOM_NAKED_TO Naked to From name equals to Domain
 #score    PDS_FRNOM_TODOM_NAKED_TO 1.5
 ##} PDS_FRNOM_TODOM_NAKED_TO
+
+##{ PDS_FROM_2_EMAILS if can(Mail::SpamAssassin::Conf::perl_min_version_5010000)
+
+if can(Mail::SpamAssassin::Conf::perl_min_version_5010000)
+  meta       PDS_FROM_2_EMAILS        __PDS_FROM_2_EMAILS && !__VIA_ML && !__VIA_RESIGNER && !__MSGID_JAVAMAIL && !__RCD_RDNS_MAIL_MESSY && !__RCD_RDNS_SMTP_MESSY && !__DKIM_EXISTS 
+  describe   PDS_FROM_2_EMAILS        From header has multiple different addresses
+#  score      PDS_FROM_2_EMAILS        3.500	# limit
+endif
+##} PDS_FROM_2_EMAILS if can(Mail::SpamAssassin::Conf::perl_min_version_5010000)
 
 ##{ PDS_FROM_NAME_TO_DOMAIN
 
@@ -3145,6 +3151,17 @@ describe PDS_HP_HELO_NORDNS High profile HELO with no sender rDNS
 #score    PDS_HP_HELO_NORDNS 1.0
 ##} PDS_HP_HELO_NORDNS
 
+##{ PDS_NO_FULL_NAME_SPOOFED_URL ifplugin Mail::SpamAssassin::Plugin::WLBLEval if (version >= 3.004000)
+
+ifplugin Mail::SpamAssassin::Plugin::WLBLEval
+if (version >= 3.004000)
+meta     PDS_NO_FULL_NAME_SPOOFED_URL __PDS_MSG_1024 && __KHOP_NO_FULL_NAME && __SPOOFED_URL && !(__VIA_ML || __SENDER_BOT || __YAHOO_BULK || __UNSUB_LINK || __THREADED || __URL_SHORTENER)
+describe PDS_NO_FULL_NAME_SPOOFED_URL HTML message short, T_SPOOFED_URL and T_KHOP_NO_FULL_NAME
+#score    PDS_NO_FULL_NAME_SPOOFED_URL 0.75 # limit
+endif
+endif
+##} PDS_NO_FULL_NAME_SPOOFED_URL ifplugin Mail::SpamAssassin::Plugin::WLBLEval if (version >= 3.004000)
+
 ##{ PDS_OTHER_BAD_TLD if (version >= 3.004002) ifplugin Mail::SpamAssassin::Plugin::WLBLEval
 
 if (version >= 3.004002)
@@ -3156,12 +3173,23 @@ endif
 endif
 ##} PDS_OTHER_BAD_TLD if (version >= 3.004002) ifplugin Mail::SpamAssassin::Plugin::WLBLEval
 
-##{ PDS_PHP_EVAL
+##{ PDS_SHORT_SPOOFED_URL ifplugin Mail::SpamAssassin::Plugin::WLBLEval if (version >= 3.004000)
 
-meta     PDS_PHP_EVAL __PDS_PHP_EVAL1
-describe PDS_PHP_EVAL PHP header shows eval'd code
-#score    PDS_PHP_EVAL 1.5
-##} PDS_PHP_EVAL
+ifplugin Mail::SpamAssassin::Plugin::WLBLEval
+if (version >= 3.004000)
+meta     PDS_SHORT_SPOOFED_URL __PDS_MSG_1024 && __SPOOFED_URL && !(__VIA_ML || __SENDER_BOT || __YAHOO_BULK || __UNSUB_LINK || __THREADED || __URL_SHORTENER)
+describe PDS_SHORT_SPOOFED_URL HTML message short and T_SPOOFED_URL (S_U_FP)
+#score    PDS_SHORT_SPOOFED_URL 2.0
+endif
+endif
+##} PDS_SHORT_SPOOFED_URL ifplugin Mail::SpamAssassin::Plugin::WLBLEval if (version >= 3.004000)
+
+##{ PDS_X_PHP_WELLKNOWN
+
+meta     PDS_X_PHP_WELLKNOWN __PDS_X_PHP_WELLKNOWN
+describe PDS_X_PHP_WELLKNOWN X-PHP-Script shows sent from a PHP script in the /.well-known/ dir
+#score    PDS_X_PHP_WELLKNOWN 1.0
+##} PDS_X_PHP_WELLKNOWN
 
 ##{ PHISH_ATTACH ifplugin Mail::SpamAssassin::Plugin::MIMEHeader
 
@@ -3216,13 +3244,6 @@ describe   PHP_ORIG_SCRIPT             Sent by bot & other signs
 #score      PHP_ORIG_SCRIPT             2.500	# limit
 tflags     PHP_ORIG_SCRIPT             publish
 ##} PHP_ORIG_SCRIPT
-
-##{ PHP_ORIG_SCRIPT_EVAL
-
-meta       PHP_ORIG_SCRIPT_EVAL        __PHP_ORIG_SCRIPT_EVAL
-describe   PHP_ORIG_SCRIPT_EVAL        From suspicious PHP source
-#score      PHP_ORIG_SCRIPT_EVAL        3.000	# limit
-##} PHP_ORIG_SCRIPT_EVAL
 
 ##{ PHP_SCRIPT
 
@@ -3709,7 +3730,7 @@ meta REPLYTO_WITHOUT_TO_CC     (__HAS_REPLY_TO && !__TOCC_EXISTS)
 
 ##{ REPTO_419_FRAUD
 
-header REPTO_419_FRAUD Reply-To:addr =~ /^(?![^\s<>@]+\@(?:(?:gmail|yahoo|outlook|hotmail|aol|yandex|protonmail|qq|consultant)\.com|yahoo\.co\.jp)(?:$|[>,\s]))(?:(?:mail)\@101private\.com|(?:(?:alfredcheuk002|mavis_wanczyk))\@126\.com|(?:(?:alfredcheuk_yuchow|ehagler))\@163\.com|(?:mathew\.yon2)\@abbsinvestment\.com|(?:wang)\@abconline\.hk|(?:ibrahimtafa)\@abienceinvestmentsfze\.com|(?:russia2018worldcuplotto5)\@accountant\.com|(?:midwestern)\@adexec\.com|(?:joxford)\@adm-irs\.com|(?:office)\@admntline\.ml|(?:(?:infovsa|maria\.louge|w(?:bfefft|n\.buffett)))\@aim\.com|(?:(?:attorneygeorgewalter|jessikasingh|lawmensa|travisalex))\@aliyun\.com|(?:(?:deanie_ron|mundo\.europe|richwetton))\@aol\.co\.uk|(?:mrssabah_ibrahim7)\@aol\.fr|(?:support)\@apostlesfoundation\.com|(?:jeromecgb12)\@asia\.com|(?:jefferson)\@athenaeumbd\.com|(?:(?:bllphillips|desousafam05))\@att\.net|(?:atendimento\-multiplus\-banco\-brasil)\@bb\.com|(?:(?:admin|info))\@bhleu\.com|(?:costruire)\@bigmat\.it|(?:susan\.lampard)\@bk\.ru|(?:(?:office\.uk|renataapsilva))\@bol\.com\.br|(?:onmydestiny18)\@boulevardmalls\.com|(?:luciamariacampbell)\@boximail\.com|(?:ochiaisatoruasistbank)\@brew-master\.com|(?:nicola)\@brighenti\.net|(?:mrshelen)\@btarneauds\.com|(?:inter01)\@c2\.hu|(?:judith_faulkner63)\@cash4u\.com|(?:cbn)\@cbofficialmail\.cf|(?:201(?:47237|5(?:5765|648[48])))\@ce\.pucmm\.edu\.do|(?:gregwingo)\@cheapnet\.it|(?:(?:andrelwotti|contact\.roycockrumgrantoffice|dbank12|fbipayment(?:50|600)|harunajim667|manuel\.rabelais|paul\.wilson|r(?:alphwjohnson|ev_markbless)|trustees101))\@citromail\.hu|(?:info)\@classicmail\.co\.za|(?:martin)\@claudiatrincado\.com|(?:irdi33)\@cock\.li|(?:federal_ministrayoffinance)\@comtube\.com|(?:cc(?:hendik|jjdesk))\@consultancydesk\.co\.ua|(?:mundo_seguros)\@contorli\.site|(?:(?:jones\-co|kellyzwo))\@cox\.net|(?:(?:investmentfince\.com|lottery(?:\.support|usa\.com)))\@cpn\.it|(?:(?:angelicainiguez|brunoso|lisatroutman))\@currently\.com|(?:(?:dmalpasswb|i(?:lanasoloshneor|nfo90000)|joseramonjr1|mynewmission|r(?:e(?:covered\-tax|em(?:2018|alhashimi|ealhashimi|hashimi2020))|onconway)))\@daum\.net|(?:info)\@dieterchwarz-charity\.com|(?:blythemasters)\@digitalassetholding\.org|(?:jorgezalesky)\@diplomats\.com|(?:bar_sahil)\@dominionassociates\.uk|(?:zahvoedir)\@donations\.christchurchliverpool\.xyz|(?:(?:abd\.aljassem|claimreview))\@dr\.com|(?:health\-support)\@drjohnashworthherbalmeds\.com|(?:atmpaymentcentttt)\@e-mail\.ua|(?:rogersteare02)\@e1\.ru|(?:jesusgacia)\@eclipso\.email|(?:davison\.warwick)\@eclipso\.eu|(?:(?:denbrink|facebook\.in(?:structor|tructor)|kathy_gerald1965|pch\.cliamdept))\@email\.com|(?:infoleonfredberbst)\@emailgroups\.net|(?:info)\@euro-pinnacle\.com|(?:(?:advancedsegurosespana|monitorunitbelgium))\@europe\.com|(?:us\.secretaryofstate)\@ex\.ua|(?:susanibrahim)\@exclusivemail\.co\.za|(?:lottomax)\@execs\.com|(?:jabufa)\@executivemail\.co\.za|(?:adam_moroney\.esq)\@fedco-usa\.com|(?:steven)\@federalreservebanks\.us|(?:jeferrey)\@financier\.com|(?:mrsdebbielevin)\@firemail\.de|(?:steve_dickson)\@firemail\.eu|(?:harry\.jones)\@firstbondcapital\.com|(?:admindepart)\@firstinlandbnkplc\.com|(?:info)\@fnconsultant\.biz|(?:(?:egolan2|gella1|qatardonations16|smadartsadik|tepnherve00))\@foxmail\.com|(?:zen)\@fpg\.com\.co|(?:mmpaulsmith145)\@frontier\.com|(?:mrchau1)\@gala\.net|(?:info)\@gcbonline\.co\.ua|(?:(?:bn|jb))\@getmaworldwide\.org|(?:info)\@gezimarkt\.com|(?:octaviancm)\@gmx\.co\.uk|(?:(?:ahmet\.broker|f(?:aridaomar|er3nrod1512)|kevin\-office|p\.hamedmoff|rosicboteruff|w(?:alter_anderson|esternunionrespond)))\@gmx\.com|(?:(?:fernrodyup12|harrish|miraiminaki))\@gmx\.fr|(?:juliairis)\@gmx\.net|(?:(?:arthur1alan|joxford))\@gmx\.us|(?:m(?:\.johnson10012|aryclayton123))\@googlemail\.com|(?:solotexglobalcouriercompany)\@groupesgb\.net|(?:raymondchanjp)\@hkmaltd\.org|(?:marketing)\@homebg\.in|(?:christgoldwilliams)\@hotmail\.fr|(?:gtakeshi)\@htisteel\.com|(?:alexgoodwill129)\@ibibo\.com|(?:bo_li)\@imgrantfunds\.com|(?:irdi33)\@inbox\.lt|(?:imffunds)\@inbox\.lv|(?:info\.fidelity\.finance)\@inbox\.ru|(?:(?:a\.josepaulino|jonardossantos|m(?:\.wood|ingmui0012)|offer2021|pierresgift_2021))\@indamail\.hu|(?:lizawong)\@infohsbc\.net|(?:info)\@intarpol-int\.online|(?:jacek_urbanski)\@irishdoorsystemsltd\.com|(?:sheikhwahab)\@islamicfb\.com|(?:mrsfatimahhassan[12])\@itbox\.ro|(?:contactme)\@jimmyofficial\.info|(?:info)\@johannaconsultancy\.com|(?:info)\@johnhenryorg\.com|(?:john)\@johnpedroconsults\.com|(?:(?:annzainab2022|h(?:ashimirrr22|re187390)|lotteryusa\.com|paulagonzalez|re(?:e(?:m\.alhashimi|ninvestor111)|mmhashimi)))\@kakao\.com|(?:europsenderscouriers)\@keemail\.me|(?:a015)\@laposte\.net|(?:johndavid)\@lawdistributionlimited\.com|(?:info)\@lbafltd\.com|(?:ecowascourt)\@legislator\.com|(?:fatih)\@leventsimsek\.com\.tr|(?:olivia_simon)\@lihat\.dds-akaun\.com|(?:pb\-2pb012)\@live\.co\.uk|(?:(?:financiero172|helen_galloway|markjohnson650))\@live\.com|(?:mr\.williamrigule)\@live\.fr|(?:miraminaki)\@lycos\.com|(?:drdanielmminele)\@magicmail\.co\.za|(?:andrewh1)\@mail2banker\.com|(?:bmwofficeinfo)\@mail2consultant\.com|(?:lanxianjun)\@mail2hongkong\.com|(?:bjic)\@mail2one\.com|(?:hwc2)\@mail2world\.com|(?:shillay)\@mail\.bg|(?:(?:a(?:isha\-gaddafi0|yishagddafio|zimhashim2018)|kateclough1|mriamchombo1968|philiproger101))\@mail\.com|(?:ayishagddafio?)\@mail\.ru|(?:(?:publishers_clearinghouse|rev\.williamschurch))\@mail\.uk|(?:mrcheongg2012)\@mailbox\.hu|(?:cb(?:nofficemail|officemail))\@mailsire\.com|(?:managing\-director_schaefflergroup)\@mariaelisabeth\.gisb\.com\.my|(?:doo\.yusin)\@matherline-trade\.com|(?:johannreimann)\@memeware\.net|(?:sarb_bnk086)\@meta\.ua|(?:miguel)\@miguel-sanchez\.com|(?:info)\@morbicera\.com|(?:anjer\.keith)\@ms-fsp-europe\.com|(?:cadpayout01)\@my\.com|(?:me)\@myprivatemail\.website|(?:stephanfalzer)\@myself\.com|(?:(?:benoitdageville2023|nancytseling|reem9999|wujames))\@naver\.com|(?:abel)\@nbdeil\.com|(?:jessicahunt1960)\@net-c\.com|(?:info)\@officepch\.com|(?:lindsaytrembley)\@oimail\.com|(?:(?:accountingdrg|emmy\.marty))\@onet\.eu|(?:(?:allanwoodmarko1|eco\.depo\.services|fred\.grenville))\@onet\.pl|(?:info)\@onlinepch\.com|(?:jarramos)\@ono\.com|(?:pablomancilla1)\@orange\.es|(?:info)\@ousos-elearning\.com|(?:schaefflermariaelisabeth)\@outlook\.de|(?:ahmed3khan)\@outlook\.fr|(?:info\-casino888\.com)\@ozu\.es|(?:info)\@peagent\.net|(?:andrew\.penning)\@penninglegalassociate\.com|(?:support)\@piraeusegrecebnk\.com|(?:wood)\@poczta\.onet\.eu|(?:(?:m(?:aryjosen|boyaeth)|uncch\-info))\@post\.com|(?:martinahrivnakova)\@post\.cz|(?:ffundsremitunits)\@premiumtbnk\.com|(?:santiagomachado)\@presidency\.com|(?:(?:charitylisajohnrobinson700|leonardbain|noelldosi|stwrightsmaxinvestment))\@proton\.me|(?:ecowaspayoffice)\@protonmail\.ch|(?:uni1)\@rayana\.ir|(?:(?:franciscoperezc|garethbull808|mrsrose\.hill|robert\.cota|unionbatmpaymentsection))\@rediffmail\.com|(?:trust\-wallet)\@redirectionsdepartment\.xyz|(?:nidiabustamante)\@registerednurses\.com|(?:info)\@rehapmed\.com|(?:info)\@repsol\.org\.uk|(?:msn)\@resrubini\.com|(?:wanczykmavis101)\@rogers\.com|(?:elena\.santos)\@rollageoup\.com|(?:mrs\.rachel2013)\@safe-mail\.net|(?:(?:deputygov_kuben|rcassim\.sarb))\@safrica\.com|(?:enqraward)\@sbcglobal\.net|(?:fbotha2009)\@secsuremail\.com|(?:francisbotha65)\@securesvsmail\.online|(?:smtpfox\-ys2n8)\@semillasdeamor\.com\.co|(?:wils)\@send\.com|(?:ibralsmma)\@seznam\.cz|(?:(?:jimyang77|kentpace))\@sina\.com|(?:stan)\@soborka\.net|(?:dycheseaan)\@sol\.dk|(?:info(?:04|1))\@sony\.com|(?:info\.jschneider)\@spainmail\.com|(?:mroliverbergmuellers)\@specialautokins\.com|(?:barrister_hans)\@stationlibraryjhelum\.com|(?:alexander)\@stny\.rr\.com|(?:fbidirector(?:11|wadc))\@superposta\.com|(?:anders\.karlsson)\@swedbankabgroup\.com|(?:insurance_contl)\@swissmail\.com|(?:nnbank)\@szm\.sk|(?:mhua)\@tbochk\.com|(?:clory)\@technet\.it|(?:billard\.thompson)\@thompsonlawassociates\.com|(?:fabio2016)\@tim\.it|(?:bobby\.william)\@tradent\.net|(?:lopez\.rios)\@udttld\.com|(?:2100973645smsgateway)\@ukraine\.wheat-farmers\.website|(?:info)\@un-grant\.info|(?:(?:david\.r\.malpass|info\.(?:clev\.frb|imfamerica)|kristinewellensteinn|policyaddmin\.file))\@usa\.com|(?:team)\@veraphanteepsuwan\.com|(?:dataphilanthropy)\@vipmail\.hu|(?:bmuczdh)\@virgilio\.it|(?:holt1231)\@w\.cn|(?:daydreamin)\@wanadoo\.fr|(?:weboffice05)\@web\.de|(?:portiaw)\@webbe\.work|(?:b(?:\-calebfirm2007|enklerk\-postpact2|oriscaleb121))\@webmail\.co\.za|(?:(?:elizabethlyonsfield|frboffice|jw\.ny\.frb))\@webmail\.hu|(?:verificationsector)\@webname\.com|(?:tbryant6)\@woh\.rr\.com|(?:henleywatkinss)\@y7mail\.com|(?:johnkwanghooi101)\@yahoo\.c|(?:chapelliermadeleine)\@yahoo\.ca|(?:arroblutt\.paymentoffice)\@yahoo\.cn|(?:bencook5511)\@yahoo\.co\.nz|(?:gloriamoses02)\@yahoo\.co\.th|(?:(?:abigailbanga1975|jeffwilliam207|owengreen70|samue95))\@yahoo\.co\.uk|(?:(?:changgordon946|thomaspeter227))\@yahoo\.com\.hk|(?:boa2cb)\@yahoo\.com\.vn|(?:contactus88\-00)\@yahoo\.es|(?:fortinsandrine)\@yahoo\.fr|(?:dr\.amelia\.george1)\@yandex\.ru|(?:(?:alfred_cheuk_chow|maviswanczyk01))\@yeah\.net|(?:(?:avaethan21|westernunion817))\@ymail\.com|(?:goldfish20123)\@zing\.vn|(?:jefflindsay)\@zoho\.com|(?:(?:benaffleck1977|monicadaniels909))\@zohomail\.com|(?:(?:laprimitivaes|robert166003))\@zohomail\.eu)$/i
+header REPTO_419_FRAUD Reply-To:addr =~ /^(?![^\s<>@]+\@(?:(?:gmail|yahoo|outlook|hotmail|aol|yandex|protonmail|qq|consultant)\.com|yahoo\.co\.jp)(?:$|[>,\s]))(?:(?:mail)\@101private\.com|(?:(?:alfredcheuk002|mavis_wanczyk))\@126\.com|(?:(?:alfredcheuk_yuchow|ehagler))\@163\.com|(?:mathew\.yon2)\@abbsinvestment\.com|(?:wang)\@abconline\.hk|(?:ibrahimtafa)\@abienceinvestmentsfze\.com|(?:russia2018worldcuplotto5)\@accountant\.com|(?:midwestern)\@adexec\.com|(?:joxford)\@adm-irs\.com|(?:office)\@admntline\.ml|(?:(?:infovsa|maria\.louge|w(?:bfefft|n\.buffett)))\@aim\.com|(?:(?:attorneygeorgewalter|jessikasingh|lawmensa|travisalex))\@aliyun\.com|(?:(?:deanie_ron|mundo\.europe|richwetton))\@aol\.co\.uk|(?:mrssabah_ibrahim7)\@aol\.fr|(?:support)\@apostlesfoundation\.com|(?:jeromecgb12)\@asia\.com|(?:jefferson)\@athenaeumbd\.com|(?:(?:bllphillips|desousafam05))\@att\.net|(?:atendimento\-multiplus\-banco\-brasil)\@bb\.com|(?:(?:admin|info))\@bhleu\.com|(?:costruire)\@bigmat\.it|(?:susan\.lampard)\@bk\.ru|(?:(?:office\.uk|renataapsilva))\@bol\.com\.br|(?:onmydestiny18)\@boulevardmalls\.com|(?:luciamariacampbell)\@boximail\.com|(?:ochiaisatoruasistbank)\@brew-master\.com|(?:nicola)\@brighenti\.net|(?:mrshelen)\@btarneauds\.com|(?:inter01)\@c2\.hu|(?:judith_faulkner63)\@cash4u\.com|(?:cbn)\@cbofficialmail\.cf|(?:201(?:47237|5(?:5765|648[48])))\@ce\.pucmm\.edu\.do|(?:gregwingo)\@cheapnet\.it|(?:(?:andrelwotti|contact\.roycockrumgrantoffice|dbank12|fbipayment(?:50|600)|harunajim667|manuel\.rabelais|paul\.wilson|r(?:alphwjohnson|ev_markbless)|trustees101))\@citromail\.hu|(?:info)\@classicmail\.co\.za|(?:martin)\@claudiatrincado\.com|(?:irdi33)\@cock\.li|(?:federal_ministrayoffinance)\@comtube\.com|(?:cc(?:hendik|jjdesk))\@consultancydesk\.co\.ua|(?:mundo_seguros)\@contorli\.site|(?:(?:jones\-co|kellyzwo))\@cox\.net|(?:(?:investmentfince\.com|lottery(?:\.support|usa\.com)))\@cpn\.it|(?:(?:angelicainiguez|brunoso|lisatroutman))\@currently\.com|(?:(?:dmalpasswb|i(?:lanasoloshneor|nfo90000)|joseramonjr1|mynewmission|r(?:e(?:covered\-tax|em(?:2018|alhashimi|ealhashimi|hashimi2020))|onconway)))\@daum\.net|(?:info)\@dieterchwarz-charity\.com|(?:blythemasters)\@digitalassetholding\.org|(?:jorgezalesky)\@diplomats\.com|(?:bar_sahil)\@dominionassociates\.uk|(?:zahvoedir)\@donations\.christchurchliverpool\.xyz|(?:(?:abd\.aljassem|claimreview))\@dr\.com|(?:health\-support)\@drjohnashworthherbalmeds\.com|(?:atmpaymentcentttt)\@e-mail\.ua|(?:rogersteare02)\@e1\.ru|(?:jesusgacia)\@eclipso\.email|(?:davison\.warwick)\@eclipso\.eu|(?:(?:denbrink|facebook\.in(?:structor|tructor)|kathy_gerald1965|pch\.cliamdept))\@email\.com|(?:infoleonfredberbst)\@emailgroups\.net|(?:info)\@emteslastock\.com|(?:info)\@euro-pinnacle\.com|(?:(?:advancedsegurosespana|monitorunitbelgium))\@europe\.com|(?:us\.secretaryofstate)\@ex\.ua|(?:susanibrahim)\@exclusivemail\.co\.za|(?:lottomax)\@execs\.com|(?:jabufa)\@executivemail\.co\.za|(?:adam_moroney\.esq)\@fedco-usa\.com|(?:steven)\@federalreservebanks\.us|(?:jeferrey)\@financier\.com|(?:mrsdebbielevin)\@firemail\.de|(?:steve_dickson)\@firemail\.eu|(?:harry\.jones)\@firstbondcapital\.com|(?:admindepart)\@firstinlandbnkplc\.com|(?:info)\@fnconsultant\.biz|(?:(?:egolan2|gella1|qatardonations16|smadartsadik|tepnherve00))\@foxmail\.com|(?:zen)\@fpg\.com\.co|(?:mmpaulsmith145)\@frontier\.com|(?:mrchau1)\@gala\.net|(?:info)\@gcbonline\.co\.ua|(?:(?:bn|jb))\@getmaworldwide\.org|(?:info)\@gezimarkt\.com|(?:octaviancm)\@gmx\.co\.uk|(?:(?:ahmet\.broker|f(?:aridaomar|er3nrod1512)|kevin\-office|p\.hamedmoff|rosicboteruff|w(?:alter_anderson|esternunionrespond)))\@gmx\.com|(?:(?:fernrodyup12|harrish|miraiminaki))\@gmx\.fr|(?:juliairis)\@gmx\.net|(?:(?:arthur1alan|joxford))\@gmx\.us|(?:m(?:\.johnson10012|aryclayton123))\@googlemail\.com|(?:solotexglobalcouriercompany)\@groupesgb\.net|(?:raymondchanjp)\@hkmaltd\.org|(?:marketing)\@homebg\.in|(?:christgoldwilliams)\@hotmail\.fr|(?:gtakeshi)\@htisteel\.com|(?:alexgoodwill129)\@ibibo\.com|(?:bo_li)\@imgrantfunds\.com|(?:irdi33)\@inbox\.lt|(?:imffunds)\@inbox\.lv|(?:info\.fidelity\.finance)\@inbox\.ru|(?:(?:a\.josepaulino|jonardossantos|m(?:\.wood|ingmui0012)|offer2021|pierresgift_2021))\@indamail\.hu|(?:lizawong)\@infohsbc\.net|(?:info)\@intarpol-int\.online|(?:jacek_urbanski)\@irishdoorsystemsltd\.com|(?:sheikhwahab)\@islamicfb\.com|(?:mrsfatimahhassan[12])\@itbox\.ro|(?:contactme)\@jimmyofficial\.info|(?:info)\@johannaconsultancy\.com|(?:info)\@johnhenryorg\.com|(?:john)\@johnpedroconsults\.com|(?:(?:annzainab2022|h(?:ashimirrr22|re187390)|lotteryusa\.com|paulagonzalez|re(?:e(?:m\.alhashimi|ninvestor111)|mmhashimi)))\@kakao\.com|(?:europsenderscouriers)\@keemail\.me|(?:a015)\@laposte\.net|(?:johndavid)\@lawdistributionlimited\.com|(?:info)\@lbafltd\.com|(?:ecowascourt)\@legislator\.com|(?:fatih)\@leventsimsek\.com\.tr|(?:olivia_simon)\@lihat\.dds-akaun\.com|(?:pb\-2pb012)\@live\.co\.uk|(?:(?:financiero172|helen_galloway|markjohnson650))\@live\.com|(?:mr\.williamrigule)\@live\.fr|(?:miraminaki)\@lycos\.com|(?:drdanielmminele)\@magicmail\.co\.za|(?:andrewh1)\@mail2banker\.com|(?:bmwofficeinfo)\@mail2consultant\.com|(?:lanxianjun)\@mail2hongkong\.com|(?:bjic)\@mail2one\.com|(?:hwc2)\@mail2world\.com|(?:shillay)\@mail\.bg|(?:(?:a(?:isha\-gaddafi0|yishagddafio|zimhashim2018)|johnkofithomas|kateclough1|mriamchombo1968|philiproger101))\@mail\.com|(?:ayishagddafio?)\@mail\.ru|(?:(?:publishers_clearinghouse|rev\.williamschurch))\@mail\.uk|(?:mrcheongg2012)\@mailbox\.hu|(?:cb(?:nofficemail|officemail))\@mailsire\.com|(?:managing\-director_schaefflergroup)\@mariaelisabeth\.gisb\.com\.my|(?:doo\.yusin)\@matherline-trade\.com|(?:johannreimann)\@memeware\.net|(?:sarb_bnk086)\@meta\.ua|(?:miguel)\@miguel-sanchez\.com|(?:info)\@morbicera\.com|(?:anjer\.keith)\@ms-fsp-europe\.com|(?:cadpayout01)\@my\.com|(?:me)\@myprivatemail\.website|(?:stephanfalzer)\@myself\.com|(?:(?:benoitdageville2023|nancytseling|reem9999|wujames))\@naver\.com|(?:abel)\@nbdeil\.com|(?:jessicahunt1960)\@net-c\.com|(?:info)\@officepch\.com|(?:lindsaytrembley)\@oimail\.com|(?:(?:accountingdrg|emmy\.marty))\@onet\.eu|(?:(?:allanwoodmarko1|eco\.depo\.services|fred\.grenville))\@onet\.pl|(?:info)\@onlinepch\.com|(?:dieterbe451)\@onmail\.com|(?:jarramos)\@ono\.com|(?:pablomancilla1)\@orange\.es|(?:info)\@ousos-elearning\.com|(?:schaeffler(?:ariaelisabeth|mariaelisabeth))\@outlook\.de|(?:ahmed3khan)\@outlook\.fr|(?:info\-casino888\.com)\@ozu\.es|(?:info)\@peagent\.net|(?:andrew\.penning)\@penninglegalassociate\.com|(?:support)\@piraeusegrecebnk\.com|(?:wood)\@poczta\.onet\.eu|(?:(?:m(?:aryjosen|boyaeth)|uncch\-info))\@post\.com|(?:martinahrivnakova)\@post\.cz|(?:ffundsremitunits)\@premiumtbnk\.com|(?:santiagomachado)\@presidency\.com|(?:(?:charitylisajohnrobinson700|leonardbain|noelldosi|stwrightsmaxinvestment))\@proton\.me|(?:ecowaspayoffice)\@protonmail\.ch|(?:uni1)\@rayana\.ir|(?:(?:franciscoperezc|garethbull808|mrsrose\.hill|robert\.cota|unionbatmpaymentsection))\@rediffmail\.com|(?:trust\-wallet)\@redirectionsdepartment\.xyz|(?:nidiabustamante)\@registerednurses\.com|(?:info)\@rehapmed\.com|(?:info)\@repsol\.org\.uk|(?:msn)\@resrubini\.com|(?:wanczykmavis101)\@rogers\.com|(?:elena\.santos)\@rollageoup\.com|(?:mrs\.rachel2013)\@safe-mail\.net|(?:(?:deputygov_kuben|rcassim\.sarb))\@safrica\.com|(?:enqraward)\@sbcglobal\.net|(?:fbotha2009)\@secsuremail\.com|(?:francisbotha65)\@securesvsmail\.online|(?:smtpfox\-ys2n8)\@semillasdeamor\.com\.co|(?:wils)\@send\.com|(?:ibralsmma)\@seznam\.cz|(?:(?:jimyang77|kentpace))\@sina\.com|(?:stan)\@soborka\.net|(?:dycheseaan)\@sol\.dk|(?:info(?:04|1))\@sony\.com|(?:info\.jschneider)\@spainmail\.com|(?:mroliverbergmuellers)\@specialautokins\.com|(?:barrister_hans)\@stationlibraryjhelum\.com|(?:alexander)\@stny\.rr\.com|(?:fbidirector(?:11|wadc))\@superposta\.com|(?:anders\.karlsson)\@swedbankabgroup\.com|(?:insurance_contl)\@swissmail\.com|(?:nnbank)\@szm\.sk|(?:mhua)\@tbochk\.com|(?:clory)\@technet\.it|(?:billard\.thompson)\@thompsonlawassociates\.com|(?:fabio2016)\@tim\.it|(?:bobby\.william)\@tradent\.net|(?:lopez\.rios)\@udttld\.com|(?:2100973645smsgateway)\@ukraine\.wheat-farmers\.website|(?:info)\@un-grant\.info|(?:(?:david\.r\.malpass|info\.(?:clev\.frb|imfamerica)|kristinewellensteinn|policyaddmin\.file))\@usa\.com|(?:team)\@veraphanteepsuwan\.com|(?:dataphilanthropy)\@vipmail\.hu|(?:bmuczdh)\@virgilio\.it|(?:holt1231)\@w\.cn|(?:daydreamin)\@wanadoo\.fr|(?:weboffice05)\@web\.de|(?:portiaw)\@webbe\.work|(?:b(?:\-calebfirm2007|enklerk\-postpact2|oriscaleb121))\@webmail\.co\.za|(?:(?:elizabethlyonsfield|frboffice|jw\.ny\.frb))\@webmail\.hu|(?:verificationsector)\@webname\.com|(?:tbryant6)\@woh\.rr\.com|(?:henleywatkinss)\@y7mail\.com|(?:johnkwanghooi101)\@yahoo\.c|(?:chapelliermadeleine)\@yahoo\.ca|(?:arroblutt\.paymentoffice)\@yahoo\.cn|(?:bencook5511)\@yahoo\.co\.nz|(?:gloriamoses02)\@yahoo\.co\.th|(?:(?:abigailbanga1975|jeffwilliam207|owengreen70|samue95))\@yahoo\.co\.uk|(?:(?:changgordon946|thomaspeter227))\@yahoo\.com\.hk|(?:boa2cb)\@yahoo\.com\.vn|(?:contactus88\-00)\@yahoo\.es|(?:fortinsandrine)\@yahoo\.fr|(?:dr\.amelia\.george1)\@yandex\.ru|(?:(?:alfred_cheuk_chow|maviswanczyk01))\@yeah\.net|(?:(?:avaethan21|westernunion817))\@ymail\.com|(?:goldfish20123)\@zing\.vn|(?:jefflindsay)\@zoho\.com|(?:(?:benaffleck1977|monicadaniels909))\@zohomail\.com|(?:(?:laprimitivaes|robert166003))\@zohomail\.eu)$/i
 describe REPTO_419_FRAUD Reply-To is known advance fee fraud collector mailbox
 #score REPTO_419_FRAUD 3.000
 tflags REPTO_419_FRAUD publish
@@ -3741,7 +3762,7 @@ tflags REPTO_419_FRAUD_CNS publish
 
 ##{ REPTO_419_FRAUD_GM
 
-header REPTO_419_FRAUD_GM Reply-To:addr =~ /^(?=[^\s<>@]+\@gmail\.com)(?:(?:01marviswanczyk|1magnumsecuritiesllc|7912richardtony|9porssts9|a(?:\.wafager1|b(?:d(?:97412345|u(?:kfahim|llahmundani019))|u(?:lkareem461|shadi0004))|c(?:count\.optionsmr\.jonasarmstrong|ecere001)|d(?:iallo\.boa|rabidiahmed)|isha(?:1976(?:algaddafi|gaddafi25)|gaddafi(?:aam|sdaughter))|l(?:\.jo60691737|an\.austin(?:041|223)|ex(?:anderpeterson4499|hoffman3319)|ghafrij13|icedoris0000|kasimunadi221|l(?:enholden121|isoncluade11)|nizmaria|ure\.wawrenka1472)|m(?:bassadormarybethleonardl4|ericadeliverycomapny1(?:300|800)|ina(?:ltwaijiri02|medjahed95))|n(?:d(?:rewumehunitedbankforafrica|yfox0022)|n(?:a(?:llee091|sigurlaug458)|ettrevor|jenijohnsonn)|t(?:hony(?:alvaradollc|jblinken61)|o(?:meuenio|niopaco20consultant)))|office1office1|r(?:adka01|chibaldhamble|thur11alan)|shwestwood7|t(?:mcarddepartment0024|tohlawoffice\.tg)|ustinbillmark9|w1614860|z(?:i(?:m(?:\.h(?:ashim\.premj|premji13)|hashim(?:2018|donation2019))|z(?:dake0|george50))|zedineguessous))|b(?:a(?:nkcentralasiahalobca34|ochang7a|r(?:bersmadar75|clays\.kenya\.bank|rister(?:\.fidelisokafor|clarkephillips(?:2(?:02|4)|4[59])|lordruben94)|teld\.huisman01))|bongo593|e(?:alitoniua9|linekra1|n(?:ezero392|gatl80|jaminsarah195)|tsyholden940)|ill\.lawrence0747|laisevodoun|mw(?:automobile242|officeline)|o(?:arddept0|cchenyi)|r(?:andy\.heavenscenttt|endalaporte112)|uff(?:ettwarrene21|ookj)|w1832621)|c(?:1nicele|a(?:pinolly|rtwrighttownhomesllc)|claimsa|e(?:da\.ogada77|licerez)|h(?:a(?:ngching885|r(?:itylisajohnrobinson41|l(?:es(?:luenga01|wrightdepartments)|tonnewmanus1)))|e(?:mchung1011|nchung1011)|ienkwongp)|iticonsultantjohncg0|kruger00017|l(?:axtonpaul00|s79408)|o(?:l(?:edavid77032|husseinharmuchc(?:cj|j)|ombasjuan53)|mp(?:asationsettlement|ensationcommitteboard)|n(?:sult(?:matthias|sto\.u)|tactad00[04]))|pt\.eugenebarash|r(?:abbechambers|ist(?:bru(?:05|n05)|davis67|i1537bru|ydavis(?:donation1|foundation0101)))|ustomerservicelacaixa2)|d(?:29laws|a(?:n(?:008629|i(?:el35508109|shlokija)|n(?:uar4|ydan24532))|tukannuarbinmusa|vi(?:d(?:\.loanfirm18|kaltschmidtmaureend|larbi11|pere337|r(?:amirez\.luis9012|ikhen))|scarolyn334|yax98))|cole77032|e(?:n(?:iwalts|nisclark659)|partmentofstate123|tlefeckhardd)|h(?:lexpresscompany176|sdevice)|i(?:ane\.s\.wojcicki|gitalassetholding|plomatsshenry)|minique200|o(?:minicahkye|na(?:ldwilliam1988|tionhelpercare5))|r(?:\.meirh|abodid|davidrhama221|jamesdee|kennedyuzo|meier\.heidi?|owenfrederick)|u(?:breuilgmbh|nsilva58|stinmoskovitz\.2facebook)|v\.metus|willslevens)|e(?:benezero392|christina937|d(?:mundventura689|runity)|l(?:i(?:bethgomez(?:175|499)|sabeth(?:gmuer11|maria600)|zabethedw0)|o(?:diesawadogo123|tocashoffice1?))|m(?:2keld|efiele(?:328|g757)|ilyrichmond391)|ngr\.des01|r(?:e(?:nakgeorge123|zcelic0)|ioncarter\.private)|stherkatherine1960|vgpatmow|wynn284)|f(?:\.mikhail025|a(?:ithdesrie511|rahwasam101|tme\.mehmed001)|b(?:589767|lott47)|e(?:deralreservebankdallasdst|lix88995)|g0067333|irstbank(?:49966|6669|k49666)|j569282|l(?:556249|uhmann\.dn)|oundations\.west|p462558|r(?:a(?:100dub132|n(?:c(?:espatrickconnolly(?:5050|4)|iscamendoza960)|k(?:j(?:ane984|ody2|wangg)|linpiesie6)))|eelottosweepstake51)|spero8[02]|u(?:lanlan28|ngg1w))|g(?:00gleggewinner19|a(?:b(?:albertoassociates|riel(?:eschmitt002|kalia1102))|r(?:ciavincent500|ethbull112016))|b(?:528796|ill4880)|e(?:neralwilliamstony990|orgekwame481|raldjhjh11)|i(?:idp955|ocastano21)|l(?:enmoore0011|oriachow5052)|o(?:dfreyscottdonation|glegewinnerteam|o(?:dnessxtra|golteam2019|oglegwiinner219))|r(?:aceobia001|e(?:ant311|energeoffrey776))|veraallen|w522834)|h(?:a(?:r(?:gate2909|ryebert101)|s(?:h(?:imyreem78|mireem801)|sanalshujairy)|uperthilbigbeate|zimissa03)|e(?:atherbrooeke101|cto(?:alon|r(?:castillos653|scastillo6))|l(?:en(?:adamsidaho|giggs88)|pdesk47321))|g(?:8669000|old8080)|i(?:ldad837|toshurui)|o(?:nmackjohn518|rnbeckmajordennis63[478]|seoky(?:34|9))|sbchgm|uichmh)|i(?:1955smael|amannjejosonn|b(?:ed627|rahimelizabeth654)|mf(?:deputyoff000|grantinter)|n(?:fo(?:\.(?:a(?:bogadosmfontana|nnedouglas10)|g00gleclaim|marviswanczyk360|orangedor|ulmusau)|64240|asminternationalpk|bankofamerikaa|dessk\.dfwairportonline|fdrserve|t(?:ech4st255|tcuckk))|gridrolle2)|rvinekim67|smail(?:eman874|tarkan533))|j(?:35809121|a(?:6002932|888179|m(?:alpriv8un|esokoh82)|n(?:nsjonifer|usensecureprivate)|sonyeungchiwai|vierlesme001)|b(?:5406424|lsuntrust)|c2222222rrr|e(?:fferydean1960|nniannjhsonn|robtt)|josvu|k3311131|m(?:3461128|powellfr)|o(?:edward023|hn(?:\.wilde\.oneplusfinance|a9577|griffn818|nietaylor242|paton\.alphafmc|r(?:awlings956|oxfordjr1)|son(?:deba|wilson(?:389|490))|uba234|walterlove2010)|monkzza|n(?:athanhaskel377|hugo1964|monkssa)|seph(?:acevedo024|babatunde192|ichael41)|vannyanderson001|yce00011)|rawlings007|s4fernado|u(?:liewatson975|sticellawgroup)|w6935997)|k(?:a(?:dulinayulii(?:ia|a)|l(?:iaksandr5|tschmidtdavid8)|malnizar000|rabo\.ramala39|t(?:ebaron(?:barr|xq)|jamess043|rinaziako56))|en(?:mckenziejr|nedy\.sawadogo19)|halidbuhazza99|js09376|kasbu790|o(?:ntakt\.claim|tokairportcargo|watsusho\.co\.ltd\.jp)|r(?:istinewellenstein024|nkl1109)|un(?:gwei7777|ioue28))|l(?:a(?:rrytoms200|ursent892|w(?:officealouancooparation|rencefoundation30))|blackshirepm|e(?:enasinghs97|onidasresearch|rynne(?:0west99|west(?:2289|5412)))|i(?:amfinchus(?:11|3)|ezlnatashavanessa|fecshortt63|li(?:ane\.bettencourt1945|ianchrstph)|nelink008|sa(?:milner001|robin117))|john6132|o(?:ganntomas|rrainewirengee|ughreymargaret67)|p319765|s(?:arbn01|chantal86)|u(?:ckywinners2018|sba\.moored2019)|w94059|y(?:\.cheapiseth909|diawright836|n(?:\.arthur011|cmba440|nmkl3332)))|m(?:a(?:bel\.manaku|ckenzbezos|damkoenig\.ruhama1b|incare655|j(?:ialfutt|or(?:dennishornbeck53|townsend01))|kaltschmidt|ll(?:am\.mlawal|etman2021)|mastar33m|n(?:ankovefimovich|duesq58|fran6(?:30|56)|uelfranco(?:727|donation02|foundation0|spende8))|r(?:i(?:a(?:111dembele|27idemba|3(?:31lucas|51lucas)|hhills00)|opabl26|tinesecurityusa)|kroth456|shalh011|tin(?:amayer903|eziglesiasabogados|jrschwarz)|y(?:franson56|josen(?:62|81)))|thewriaanza|u(?:hin52|noveutileina|rhinck11?)|viswan(?:142|czyk(?:01478|1(?:19|987)|4(?:89|5)|775|foundation45|k112))|xaajn|ydetratt|zerfexi)|brons667|c(?:\.cheadychang76|kenthando)|dredban775|e(?:044386|l(?:aniekreiss1971|lagolan|vidabullock5))|gfrederick80|husameddine|i(?:c(?:h(?:ael\.woosley1972|eal(?:sjohnj|wuu002))|paulla|w954)|k(?:e\.weirsky\.foundational001|h(?:\.fridman|ai(?:\.fridman261|lfridm32)))|ntonjustin98|ss(?:\.(?:aminaibrahim|melisa\.mehmett|yasmineibrahim101)|yaelronen))|jminabii|k(?:ent7117|untjoro52)|m(?:1086771|argaritalouisdreyfus|ohammadaljllilati|rstephen16)|nmalarge|oham(?:edabdul1717|m(?:daljililati1|edshamekh24))|r(?:\.(?:elbahi\.mohammed\.2021|justinmaxwell09|lusee|tonyelumelu60)|cjames001|d517341|eric(?:franck|schmid4002)|georgeemera|hanimuhammad627|jamesmc6|morgangomez56|r(?:echardthomas|ichardanthony1)|s(?:\.(?:janetolsen?|marinakuznetsov|olsenjanett|su(?:sanread12|zarawanmaling))|a(?:ishaalqadafi1976|ngela454|shaalqaddfi117)|catherineyokes|dominiquethomas7777|evelynbrown7|fatimaamiraqureshi1983|gezeria|h(?:amima60|ristinemadeleine)|isabelladz|j(?:ackman123|lleach)|lisamilner08|m(?:a(?:riaelizabethscheffle98|ureens847|yaoliver31)|ugan)|r(?:eem362|obinsanders185|uthsmith9900)|sarahbenjamin103|v(?:eraaellen|ictoriaedmond03))|tomcrist\.ca|viktorzubkovv)|s(?:\.ellagolan56|agent02|golaan4|smadar44)|u(?:ali000111|stadris22)|y(?:burghhugohendrik|racbally))|n(?:aomiiwasaki181|ckniem|eilt(?:9108|rotter968)|icholas\.jose73|obuyuki\.hirano128|tawdglobal|v637245)|o(?:\.peace004|3344nb|ffic(?:e(?:\.012123|rricherd876|windowterms)|ialserviceuae)|hallkenneth1|lenasheve73|marinyandeng|nufoundationclaims|pcwkdw|rabankheadofficelometogo1985|xfaminternationa1980)|p(?:a(?:trick(?:\.efcc|andfrancessconnolly)|ul(?:eed1969|n8018))|b(?:ph202lay2|rookk0)|e(?:130304|ndingredirections|rezdonlorenzo336|t(?:er(?:\.waddell204|guggi0|kenin73?|stephen4040)|ronasofficepromo))|good60000|hillip\.richead218|ilz37754|olloke|r(?:imecapitalfianceltd|o1nvstream)|trsvermeulen|w178483)|q(?:iquanzhou7|nzeng1)|r(?:19772744|677gfd|a(?:johnfernn|kidy23|lhashimi78|ymondaba200)|e(?:alyh596|beccagarang11|em(?:has(?:himy(?:1978|mail)|m044)|n(?:2214|asser003302))|lpandemic|mittanceofficeasaba|neehii\.omb|plyback00|v(?:\.jamesabel1|ernestcebi|fr(?:ankjackson91|paulwilliams2)))|icha(?:miller18|rd(?:lustig4u|w(?:ahl511|il(?:lis815|son19091))))|josh200000|main2028|o(?:b(?:erthanandez6655|inf036)|naldmorris786|s(?:a\.gomes0044|ekipkalya934))|raya9989|svcdusan|t(?:\.rev\.ericmark05|honrichardshepherd)|u(?:ddicklana561|ssiaworldcuppromo))|s(?:a(?:chingrams|l(?:ehhussienconsult1|imzaid(?:09|7000))|nchoscozfifa|rfiafarfask7)|cott(?:henryjames91|peters7989)|e(?:cretservicce[789]|rgeantrobertbrown1)|g(?:\.offiice\.group|t(?:\.monicab03|ireneb2))|h(?:a(?:msiahmohamadyunusbnegara|nemissler(?:2009|3))|ery(?:\.gtl131|etr03)|inawatrathaksin93)|im(?:lkheng5|onhei47)|op(?:adam3|hiajesse41)|p(?:agentrose|eelman1972)|t(?:anleyjohn1469|e(?:phen(?:7tam|tam1(?:47|6))|venchamberonline))|u(?:iyang(?:\.boc|02)|n\.hor20|san(?:freeman112x|neklatten502)|zana111bah)|weeneyjohnson384)|t(?:a(?:mmywebster24|y(?:ebsouami0|lorcathy362))|ch33555|davalvse|e(?:nreyrosilvana54|rryparkins11)|h(?:ailandbankoffice01|e(?:ara\.choy2|odorosloannis9))|imothymetheny01|lyerdonald613|mason9w4r|o(?:m(?:\.cristdonor|ander231|c(?:hrist1995|rist(?:52|donation12|foundation99|world))|spende480)|ny(?:\.chung760|robins777|zimpro11)|pchronodesk|shikazusendo101)|p2911220|tkhan69s)|u(?:ba\.bankofaffican|derleyen52|kponguko|marukareem8|n(?:claimedfunds554|ited(?:bankforafrica\.plc102|nation(?:organization70|s(?:8182|councilrefunds))))|s(?:alotery2|departmentofjustice80))|v(?:a(?:mamakazlegalchambers|nderwesthuizen560)|e(?:enapatel883|linagreen|neerchris20003|r(?:a(?:aellen7|hollinkvan0)|enichekaterinaekaterina4))|i(?:ctoriaabraham2310|dalpamela85|ngut170|pjeferrey)|johannes271|n935990|owpovertyfoundation)|w(?:a(?:dp4726|hlr(?:5990|ichard18)|ldibeatesieberhagen|nczykm61|rrenebuffett2)|b(?:271981|6159980)|c5000dle|ellensteinfoundation251|hatsappofficial001|i(?:elandherzog\.sw\.herad16|ll(?:clark(?:2618|629)|iamsmartyrs888))|kfinancialservice|orldbankregionalmanageroffice|u\.office212|ww\.moneygram9054)|y(?:\.oguzhan011|anghoseok5|doo974|inglukshinawtra|o(?:ngkm00|usefzongo5722))|z(?:bank8876|enithbankplconline98|kiaslan1963|minhong65|ubkovmrviktor)))\@gmail\.com$/i
+header REPTO_419_FRAUD_GM Reply-To:addr =~ /^(?=[^\s<>@]+\@gmail\.com)(?:(?:01marviswanczyk|1magnumsecuritiesllc|7912richardtony|9porssts9|a(?:\.wafager1|12udubello|b(?:d(?:97412345|u(?:kfahim|llahmundani019))|u(?:lkareem461|shadi0004))|c(?:count\.optionsmr\.jonasarmstrong|ecere001)|d(?:iallo\.boa|rabidiahmed)|isha(?:1976(?:algaddafi|gaddafi25)|gaddafi(?:aam|sdaughter))|l(?:\.jo60691737|an\.austin(?:041|223)|ex(?:anderpeterson4499|hoffman3319)|ghafrij13|icedoris0000|kasimunadi221|l(?:enholden121|isoncluade11)|nizmaria|ure\.wawrenka1472)|m(?:bassadormarybethleonardl4|ericadeliverycomapny1(?:300|800)|ina(?:ltwaijiri02|medjahed95))|n(?:d(?:rewumehunitedbankforafrica|yfox0022)|n(?:a(?:llee091|sigurlaug458)|ettrevor|jenijohnsonn)|t(?:hony(?:alvaradollc|jblinken61)|o(?:meuenio|niopaco20consultant)))|office1office1|r(?:adka01|chibaldhamble|thur11alan)|shwestwood7|t(?:mcarddepartment0024|tohlawoffice\.tg)|ustinbillmark9|w1614860|z(?:i(?:m(?:\.h(?:ashim\.premj|premji13)|hashim(?:2018|donation2019))|z(?:dake0|george50))|zedineguessous))|b(?:a(?:nkcentralasiahalobca34|ochang7a|r(?:bersmadar75|clays\.kenya\.bank|rister(?:\.fidelisokafor|clarkephillips(?:2(?:02|4)|4[59])|lordruben94)|teld\.huisman01))|bongo593|e(?:alitoniua9|linekra1|n(?:ezero392|gatl80|jaminsarah195)|tsyholden940)|ill\.lawrence0747|laisevodoun|mw(?:automobile242|officeline)|o(?:arddept0|cchenyi)|r(?:andy\.heavenscenttt|endalaporte112)|uff(?:ettwarrene21|ookj)|w1832621)|c(?:1nicele|a(?:pinolly|rtwrighttownhomesllc)|claimsa|e(?:da\.ogada77|licerez)|h(?:a(?:ngching885|r(?:itylisajohnrobinson41|l(?:es(?:luenga01|wrightdepartments)|tonnewmanus1)))|e(?:mchung1011|nchung1011)|ienkwongp)|iticonsultantjohncg0|kruger00017|l(?:axtonpaul00|s79408)|o(?:l(?:edavid77032|husseinharmuchc(?:cj|j)|ombasjuan53)|mp(?:asationsettlement|ensationcommitteboard)|n(?:sult(?:matthias|sto\.u)|tactad00[04]))|pt\.eugenebarash|r(?:abbechambers|ist(?:bru(?:05|n05)|davis67|i1537bru|ydavis(?:donation1|foundation0101)))|ustomerservicelacaixa2)|d(?:29laws|a(?:n(?:008629|i(?:el35508109|shlokija)|n(?:uar4|ydan24532))|tukannuarbinmusa|vi(?:d(?:\.loanfirm18|kaltschmidtmaureend|larbi11|pere337|r(?:amirez\.luis9012|ikhen))|scarolyn334|yax98))|cole77032|e(?:n(?:iwalts|nisclark659)|partmentofstate123|tlefeckhardd)|h(?:lexpresscompany176|sdevice)|i(?:ane\.s\.wojcicki|gitalassetholding|plomatsshenry)|minique200|o(?:minicahkye|na(?:ldwilliam1988|tionhelpercare5))|r(?:\.meirh|abodid|davidrhama221|jamesdee|kennedyuzo|meier\.heidi?|owenfrederick|rhamahassan22)|u(?:breuilgmbh|nsilva58|stinmoskovitz\.2facebook)|v\.metus|willslevens)|e(?:benezero392|christina937|d(?:mundventura689|runity)|l(?:i(?:bethgomez(?:175|499)|sabeth(?:gmuer11|maria600)|zabethedw0)|o(?:diesawadogo123|tocashoffice1?))|m(?:2keld|efiele(?:328|g757)|ilyrichmond391)|ngr\.des01|r(?:e(?:nakgeorge123|zcelic0)|ioncarter\.private)|stherkatherine1960|vgpatmow|wynn284)|f(?:\.mikhail025|a(?:ithdesrie511|rahwasam101|tme\.mehmed001)|b(?:589767|lott47)|e(?:deralreservebankdallasdst|lix88995)|g0067333|irstbank(?:49966|6669|k49666)|j569282|l(?:556249|uhmann\.dn)|oundations\.west|p462558|r(?:a(?:100dub132|n(?:c(?:espatrickconnolly(?:5050|4)|iscamendoza960)|k(?:j(?:ane984|ody2|wangg)|linpiesie6)))|eelottosweepstake51)|spero8[02]|u(?:lanlan28|ngg1w))|g(?:00gleggewinner19|a(?:b(?:albertoassociates|riel(?:eschmitt002|kalia1102))|r(?:ciavincent500|ethbull112016))|b(?:528796|ill4880)|e(?:neralwilliamstony990|orgekwame481|raldjhjh11)|i(?:idp955|ocastano21)|l(?:enmoore0011|oriachow5052)|o(?:dfreyscottdonation|glegewinnerteam|o(?:dnessxtra|golteam2019|oglegwiinner219))|r(?:aceobia001|e(?:ant311|energeoffrey776))|veraallen|w522834)|h(?:a(?:r(?:gate2909|ryebert101)|s(?:h(?:imyreem78|mireem801)|sanalshujairy)|uperthilbigbeate|zimissa03)|e(?:atherbrooeke101|cto(?:alon|r(?:castillos653|scastillo6))|l(?:en(?:adamsidaho|giggs88)|pdesk47321)|ritagetrustbank1985)|g(?:8669000|old8080)|i(?:ldad837|toshurui)|o(?:nmackjohn518|rnbeckmajordennis63[478]|seoky(?:34|9))|sbchgm|uichmh)|i(?:1955smael|amannjejosonn|b(?:ed627|rahimelizabeth654)|mf(?:deputyoff000|grantinter)|n(?:fo(?:\.(?:a(?:bogadosmfontana|nnedouglas10)|g00gleclaim|marviswanczyk360|orangedor|ulmusau)|64240|asminternationalpk|bankofamerikaa|dessk\.dfwairportonline|fdrserve|t(?:ech4st255|tcuckk))|gridrolle2)|rvinekim67|smail(?:eman874|tarkan533))|j(?:35809121|a(?:6002932|888179|m(?:alpriv8un|esokoh82)|n(?:nsjonifer|usensecureprivate)|sonyeungchiwai|vierlesme001)|b(?:5406424|lsuntrust)|c2222222rrr|e(?:fferydean1960|nniannjhsonn|robtt)|josvu|k3311131|m(?:3461128|powellfr)|o(?:edward023|hn(?:\.wilde\.oneplusfinance|a9577|griffn818|nietaylor242|paton\.alphafmc|r(?:awlings956|oxfordjr1)|son(?:deba|wilson(?:389|490))|uba234|walterlove2010)|monkzza|n(?:a(?:haskel19|thanhaskel377)|hugo1964|monkssa)|seph(?:acevedo024|babatunde192|ichael41)|vannyanderson001|yce00011)|rawlings007|s4fernado|u(?:liewatson975|sticellawgroup)|w6935997)|k(?:a(?:dulinayulii(?:ia|a)|l(?:iaksandr5|tschmidtdavid8)|malnizar000|rabo\.ramala39|t(?:ebaron(?:barr|xq)|jamess043|rinaziako56))|en(?:mckenziejr|nedy\.sawadogo19)|halidbuhazza99|js09376|kasbu790|o(?:ntakt\.claim|tokairportcargo|watsusho\.co\.ltd\.jp)|r(?:istinewellenstein024|nkl1109)|un(?:gwei7777|ioue28))|l(?:a(?:rrytoms200|ursent892|w(?:officealouancooparation|rencefoundation30))|blackshirepm|e(?:enasinghs97|onidasresearch|rynne(?:0west99|west(?:2289|5412)))|i(?:amfinchus(?:11|3)|ezlnatashavanessa|fecshortt63|li(?:ane\.bettencourt1945|ianchrstph)|nelink008|sa(?:milner001|robin117))|john6132|o(?:ganntomas|rrainewirengee|ughreymargaret67)|p319765|s(?:arbn01|chantal86)|u(?:ckywinners2018|sba\.moored2019)|w94059|y(?:\.cheapiseth909|diawright836|n(?:\.arthur011|cmba440|nmkl3332)))|m(?:a(?:bel\.manaku|ckenzbezos|damkoenig\.ruhama1b|incare655|j(?:ialfutt|or(?:dennishornbeck53|townsend01))|kaltschmidt|ll(?:am\.mlawal|etman2021)|mastar33m|n(?:ankovefimovich|duesq58|fran6(?:30|56)|uelfranco(?:727|donation02|foundation0|spende8))|r(?:i(?:a(?:111dembele|27idemba|3(?:31lucas|51lucas)|hhills00)|opabl26|tinesecurityusa)|kroth456|shalh011|tin(?:amayer903|eziglesiasabogados|jrschwarz)|y(?:franson56|josen(?:62|81)))|thewriaanza|u(?:hin52|noveutileina|rhinck11?)|viswan(?:142|czyk(?:01478|1(?:19|987)|4(?:89|5)|775|foundation45|k112))|xaajn|ydetratt|zerfexi)|brons667|c(?:\.cheadychang76|kenthando)|dredban775|e(?:044386|l(?:aniekreiss1971|lagolan|vidabullock5))|gfrederick80|husameddine|i(?:c(?:h(?:ael\.woosley1972|eal(?:sjohnj|wuu002))|paulla|w954)|k(?:e\.weirsky\.foundational001|h(?:\.fridman|ai(?:\.fridman261|lfridm32)))|ntonjustin98|ss(?:\.(?:aminaibrahim|melisa\.mehmett|yasmineibrahim101)|yaelronen))|jminabii|k(?:ent7117|untjoro52)|m(?:1086771|argaritalouisdreyfus|ohammadaljllilati|rstephen16)|nmalarge|oham(?:edabdul1717|m(?:daljililati1|edshamekh24))|r(?:\.(?:elbahi\.mohammed\.2021|justinmaxwell09|lusee|tonyelumelu60)|cjames001|d517341|eric(?:franck|schmid4002)|georgeemera|hanimuhammad627|jamesmc6|morgangomez56|r(?:echardthomas|ichardanthony1)|s(?:\.(?:janetolsen?|marinakuznetsov|olsenjanett|su(?:sanread12|zarawanmaling))|a(?:ishaalqadafi1976|ngela454|shaalqaddfi117)|catherineyokes|dominiquethomas7777|evelynbrown7|fatimaamiraqureshi1983|gezeria|h(?:amima60|ristinemadeleine)|isabelladz|j(?:ackman123|lleach)|lisamilner08|m(?:a(?:riaelizabethscheffle98|ureens847|yaoliver31)|ugan)|r(?:eem362|obinsanders185|uthsmith9900)|sar(?:ahbenjamin103|iamirahwulu)|v(?:eraaellen|ictoriaedmond03))|tomcrist\.ca|viktorzubkovv)|s(?:\.ellagolan56|agent02|golaan4|smadar44)|u(?:ali000111|stadris22)|y(?:burghhugohendrik|racbally))|n(?:aomiiwasaki181|ckniem|eilt(?:9108|rotter968)|icholas\.jose73|obuyuki\.hirano128|tawdglobal|v637245)|o(?:\.peace004|3344nb|ffi(?:c(?:e(?:\.012123|rricherd876|windowterms)|ialserviceuae)|zielllk)|hallkenneth1|lenasheve73|marinyandeng|nufoundationclaims|pcwkdw|rabankheadofficelometogo1985|xfaminternationa1980)|p(?:a(?:trick(?:\.efcc|andfrancessconnolly)|ul(?:eed1969|n8018))|b(?:ph202lay2|rookk0)|e(?:130304|ndingredirections|rezdonlorenzo336|t(?:er(?:\.waddell204|guggi0|kenin73?|stephen4040)|ronasofficepromo))|good60000|hillip\.richead218|ilz37754|olloke|r(?:imecapitalfianceltd|o1nvstream)|trsvermeulen|w178483)|q(?:iquanzhou7|nzeng1)|r(?:19772744|677gfd|a(?:johnfernn|kidy23|lhashimi78|ymondaba200)|e(?:alyh596|beccagarang11|em(?:has(?:himy(?:1978|mail)|m044)|n(?:2214|asser003302))|lpandemic|mittanceofficeasaba|neehii\.omb|plyback00|v(?:\.jamesabel1|ernestcebi|fr(?:ankjackson91|paulwilliams2)))|icha(?:miller18|rd(?:lustig4u|w(?:ahl511|il(?:lis815|son19091))))|josh200000|main2028|o(?:b(?:erthanandez6655|inf036)|naldmorris786|s(?:a\.gomes0044|ekipkalya934))|raya9989|svcdusan|t(?:\.rev\.ericmark05|honrichardshepherd)|u(?:ddicklana561|ssiaworldcuppromo))|s(?:a(?:chingrams|l(?:ehhussienconsult1|imzaid(?:09|7000))|nchoscozfifa|rfiafarfask7)|cott(?:henryjames91|peters7989)|e(?:cretservicce[789]|rgeantrobertbrown1)|g(?:\.offiice\.group|t(?:\.monicab03|ireneb2))|h(?:a(?:msiahmohamadyunusbnegara|nemissler(?:2009|3))|ery(?:\.gtl131|etr03)|inawatrathaksin93)|im(?:lkheng5|onhei47)|op(?:adam3|hiajesse41)|p(?:a(?:cex\.inititative|gentrose)|eelman1972)|t(?:anleyjohn1469|e(?:phen(?:7tam|tam1(?:47|6))|venchamberonline))|u(?:iyang(?:\.boc|02)|n\.hor20|san(?:freeman112x|neklatten502)|zana111bah)|weeneyjohnson384)|t(?:a(?:mmywebster24|y(?:ebsouami0|lorcathy362))|ch33555|davalvse|e(?:nreyrosilvana54|rryparkins11)|h(?:ailandbankoffice01|e(?:ara\.choy2|odorosloannis9))|imothymetheny01|lyerdonald613|mason9w4r|o(?:m(?:\.cristdonor|ander231|c(?:hrist1995|rist(?:52|donation12|foundation99|world))|spende480)|ny(?:\.chung760|robins777|zimpro11)|pchronodesk|shikazusendo101)|p2911220|tkhan69s)|u(?:ba\.bankofaffican|derleyen52|kponguko|marukareem8|n(?:claimedfunds554|ited(?:bankforafrica\.plc102|nation(?:organization70|s(?:8182|councilrefunds))))|s(?:alotery2|departmentofjustice80))|v(?:a(?:mamakazlegalchambers|nderwesthuizen560)|e(?:enapatel883|linagreen|neerchris20003|r(?:a(?:aellen7|hollinkvan0)|enichekaterinaekaterina4))|i(?:ctoriaabraham2310|dalpamela85|ngut170|pjeferrey)|johannes271|n935990|owpovertyfoundation)|w(?:a(?:dp4726|hlr(?:5990|ichard18)|ldibeatesieberhagen|nczykm61|rrenebuffett2)|b(?:271981|6159980)|c5000dle|ellensteinfoundation251|hatsappofficial001|i(?:elandherzog\.sw\.herad16|ll(?:clark(?:2618|629)|iamsmartyrs888))|kfinancialservice|orldbankregionalmanageroffice|u\.office212|ww\.moneygram9054)|y(?:\.oguzhan011|anghoseok5|doo974|inglukshinawtra|o(?:ngkm00|usefzongo5722))|z(?:bank8876|enithbankplconline98|kiaslan1963|minhong65|ubkovmrviktor)))\@gmail\.com$/i
 describe REPTO_419_FRAUD_GM Reply-To is known advance fee fraud collector mailbox
 #score REPTO_419_FRAUD_GM 3.000
 tflags REPTO_419_FRAUD_GM publish
@@ -3757,7 +3778,7 @@ tflags REPTO_419_FRAUD_GM_LOOSE publish
 
 ##{ REPTO_419_FRAUD_HM
 
-header REPTO_419_FRAUD_HM Reply-To:addr =~ /^(?=[^\s<>@]+\@hotmail\.com)(?:(?:a(?:brahambeniam|licewalton7653|n(?:ikal01|nagray00)|zezul\.idrisazezulidris)|c(?:h(?:angxinjuan|oi21)|laytousey)|d(?:ealings100|l13139|r\.dukanalycoulibaly)|egorbunova22|f(?:axttransfer\.skyebk\.service\.care\.th|ridmanmikhail511)|infos(?:43|8)|katabettencourt2018|l(?:e(?:a_edem|galcosme|wisarm44)|ulihongm)|m(?:oneygrampayfund|r(?:abrahambeniamfc|pedrohilldonations|s(?:\.chantal_bill|micheleallison2003)))|n(?:inajohn226|waigwe2765)|ocbc\-ba\-nkonline|powen10001|quickcashloansservices|s(?:a(?:jda\.andleeb|nchamps798)|tuboardgntdirector|ulaimaninfante)|t(?:a(?:baka_williamshsbbc|shacap)|omashntr)|unb(?:2015|int)|yostinbellamohammad))\@hotmail\.com$/i
+header REPTO_419_FRAUD_HM Reply-To:addr =~ /^(?=[^\s<>@]+\@hotmail\.com)(?:(?:a(?:brahambeniam|licewalton7653|n(?:ikal01|nagray00)|zezul\.idrisazezulidris)|c(?:h(?:angxinjuan|oi21)|laytousey)|d(?:ealings100|l13139|r\.dukanalycoulibaly)|egorbunova22|f(?:axttransfer\.skyebk\.service\.care\.th|ridmanmikhail511)|infos(?:43|8)|jacques\.bouchex|katabettencourt2018|l(?:e(?:a_edem|galcosme|wisarm44)|ulihongm)|m(?:oneygrampayfund|r(?:abrahambeniamfc|pedrohilldonations|s(?:\.chantal_bill|micheleallison2003)))|n(?:inajohn226|waigwe2765)|ocbc\-ba\-nkonline|powen10001|quickcashloansservices|s(?:a(?:jda\.andleeb|nchamps798)|tuboardgntdirector|ulaimaninfante)|t(?:a(?:baka_williamshsbbc|shacap)|omashntr)|unb(?:2015|int)|yostinbellamohammad))\@hotmail\.com$/i
 describe REPTO_419_FRAUD_HM Reply-To is known advance fee fraud collector mailbox
 #score REPTO_419_FRAUD_HM 3.000
 tflags REPTO_419_FRAUD_HM publish
@@ -3819,13 +3840,6 @@ describe REPTO_419_FRAUD_YN Reply-To is known advance fee fraud collector mailbo
 tflags REPTO_419_FRAUD_YN publish
 ##} REPTO_419_FRAUD_YN
 
-##{ REPTO_INFONUMSCOM
-
-meta       REPTO_INFONUMSCOM           __REPTO_INFONUMSCOM
-#score      REPTO_INFONUMSCOM           3.000	# limit
-tflags     REPTO_INFONUMSCOM           publish
-##} REPTO_INFONUMSCOM
-
 ##{ RISK_FREE
 
 meta     RISK_FREE      __FRAUD_IOV && !__UNSUB_LINK && !__VIA_ML && !__HTML_LINK_IMAGE && !__SUBSCRIPTION_INFO && !__HS_SUBJ_RE_FW && !__LCL__ENV_AND_HDR_FROM_MATCH 
@@ -3857,6 +3871,15 @@ body	 SCC_CANSPAM_1		/The advertiser does not manage your subscription/
 describe SCC_CANSPAM_2		Interesting compliance language
 body	 SCC_CANSPAM_2		/you may unsubscribe by clicking here or by writing to/
 ##} SCC_CANSPAM_2
+
+##{ SCC_CTMPP ifplugin Mail::SpamAssassin::Plugin::MIMEHeader
+
+ifplugin Mail::SpamAssassin::Plugin::MIMEHeader
+describe	SCC_CTMPP	Uncommon Content-Type
+meta		SCC_CTMPP	__SCC_CTMPP
+tflags		SCC_CTMPP	publish
+endif
+##} SCC_CTMPP ifplugin Mail::SpamAssassin::Plugin::MIMEHeader
 
 ##{ SCC_ISEMM_LID_1
 
@@ -3915,6 +3938,12 @@ endif
 endif
 ##} SEO_SUSP_NTLD if (version >= 3.004002) ifplugin Mail::SpamAssassin::Plugin::WLBLEval
 
+##{ SERGIO_SUBJECT_VIAGRA01
+
+header   SERGIO_SUBJECT_VIAGRA01   Subject =~ /v[^a-zA-Z0-9]{0,3}[i1l][^a-zA-Z0-9]{0,3}a[^a-zA-Z0-9 ]{0,3}g[^a-zA-Z0-9]{0,3}r[^a-zA-Z0-9]{0,3}a/i
+describe SERGIO_SUBJECT_VIAGRA01   Viagra garbled subject
+##} SERGIO_SUBJECT_VIAGRA01
+
 ##{ SHOPIFY_IMG_NOT_RCVD_SFY
 
 meta       SHOPIFY_IMG_NOT_RCVD_SFY    __SHOPIFY_IMG_NOT_RCVD_SFY && !MIME_QP_LONG_LINE && !__RCD_RDNS_MTA_MESSY && !__AC_UNSUB_URI && !__HAS_CAMPAIGNID && !__HAS_SENDER && !__HAS_ORGANIZATION && !__RCD_RDNS_OB && !__DOS_LINK 
@@ -3922,6 +3951,11 @@ meta       SHOPIFY_IMG_NOT_RCVD_SFY    __SHOPIFY_IMG_NOT_RCVD_SFY && !MIME_QP_LO
 describe   SHOPIFY_IMG_NOT_RCVD_SFY    Shopify hosted image but message not from Shopify
 tflags     SHOPIFY_IMG_NOT_RCVD_SFY    publish
 ##} SHOPIFY_IMG_NOT_RCVD_SFY
+
+##{ SHORTENED_URL_SRC
+
+rawbody	 SHORTENED_URL_SRC	/<[^>]{1,99}\ssrc=\W?https?:\/\/(?:bit\.ly|bit\.do|buff\.ly|tinyurl\.com|ow\.ly|owl\.li|is\.gd|tumblr\.com|mysp\.ac|formspring\.me|ff\.im|youtu\.be|tl\.gd|plurk\.com|migre\.me|j\.mp|cli\.gs|goo\.gl|goo\.io|yfrog\.com|lnk\.ms|su\.pr|fb\.me|alturl\.com|wp\.me|ping\.fm|chatter\.com|post\.ly|twurl\.nl|tiny\.cc|4sq\.com|ustre\.am|short\.to|u\.nu|flic\.kr|budurl\.com|digg\.com|twitvid\.com|gowal\.la|om\.ly|justin\.tv|icio\.us|p\.gs|loopt\.us|tcrn\.ch|xrl\.us|wpo\.st|bkite\.com|t\.cn|t\.co|x\.co|hop\.kz|urla\.ru|fw\.to|back\.ly|ecs\.page\.link|cc\.uz|smarturl\.it|s\.apache\.org)\/[^\/]{3}/
+##} SHORTENED_URL_SRC
 
 ##{ SHORTENER_SHORT_IMG
 
@@ -3993,7 +4027,7 @@ describe SPAMMY_XMAILER X-Mailer string is common in spam and not in ham
 
 ##{ SPAM_CWINDOWSNET
 
-uri SPAM_CWINDOWSNET m;^https?://(?=[^/]+\.(?:blob|web)\.core\.windows\.net)(?:(?:aaaa(?:aahadii5[89]|bbbbcdertfer(?:131|34))|b(?:9jwpncnsz2cg5bpbojgl|bbbccccddester61|dkbazmjnlvajmjjszdc|ulkma(?:ilmanager(?:im|snrperk|m)|nhegeteam))|calivokavoaka|d(?:fjmteeymhimuokqbwio|sfgdfgsdfg)|e(?:6tidwa3xtdxsxrv6fevh|fnzewdwwwxdormvkltxqj|riogsnkdqsdqsd32l|wialtlgncnagaebsuohhsz)|greatetchtoaitechnologyh|linkbulkmailpromanager|mvkcjoigfks|n(?:6w479nhk1tkyo6u1p844s|fnybcmyhaaphiglbzra)|o(?:ovgienjzlmmfkmwoyep|penbankstonecdn)|relashwpakcbe2cjehsed|u(?:lqdjksdsdsd3sd|rqjlnefdqsdfik2k)|z(?:ahriiana59|c2mjw9btnqfgw6ps7ex)))\.(?:blob|web)\.core\.windows\.net/;i
+uri SPAM_CWINDOWSNET m;^https?://(?=[^/]+\.(?:blob|web)\.core\.windows\.net)(?:(?:aaaa(?:aahadii5[89]|bbbbcdertfer(?:131|34))|b(?:9jwpncnsz2cg5bpbojgl|bbbccccddester61|cnejjdolasiejdbcdhc|dkbazmjnlvajmjjszdc|ulkma(?:ilmanager(?:im|snrperk|m)|nhegeteam))|c(?:alivokavoaka|nrdnahxbhdjoalxkejd)|d(?:fjmteeymhimuokqbwio|hjepmalqkdbxheuajd|sfgdfgsdfg)|e(?:6tidwa3xtdxsxrv6fevh|fnzewdwwwxdormvkltxqj|riogsnkdqsdqsd32l|wialtlgncnagaebsuohhsz)|f(?:lropmedjxbexbdzhsd|mdplenxyejxbqgesk|pmrlcnruhwvxcsdrzt)|greatetchtoaitechnologyh|linkbulkmailpromanager|mvkcjoigfks|n(?:6w479nhk1tkyo6u1p844s|ckfomeldncejdjsbdhjdxbd|fnybcmyhaaphiglbzra)|o(?:ovgienjzlmmfkmwoyep|penbankstonecdn)|relashwpakcbe2cjehsed|u(?:lqdjksdsdsd3sd|rqjlnefdqsdfik2k)|xbvomrplzncxhrbdgsd|z(?:ahriiana59|c2mjw9btnqfgw6ps7ex)))\.(?:blob|web)\.core\.windows\.net/;i
 describe SPAM_CWINDOWSNET Link to known hosted spam or phishing content
 #score SPAM_CWINDOWSNET 3.500
 tflags SPAM_CWINDOWSNET publish
@@ -4094,6 +4128,11 @@ tflags      STOCK_TIP         publish
 meta STOX_AND_PRICE     CURR_PRICE && STOX_REPLY_TYPE
 ##} STOX_AND_PRICE
 
+##{ STOX_BOUND_090909_B
+
+header STOX_BOUND_090909_B Content-Type:raw =~ /;\n boundary=\"------------0[0-9]0[0-9]0[0-9]0[0-9]0[0-9]0[0-9]0[0-9]0[0-9]0[0-9]0[0-9]0[0-9]0[0-9]\"$/s
+##} STOX_BOUND_090909_B
+
 ##{ STOX_REPLY_TYPE
 
 header STOX_REPLY_TYPE  Content-Type =~ /text\/plain; .* reply-type=original/
@@ -4137,19 +4176,18 @@ ifplugin Mail::SpamAssassin::Plugin::DKIM
 endif
 ##} SUBJ_BRKN_WORDNUMS ifplugin Mail::SpamAssassin::Plugin::DKIM
 
+##{ SUBJ_UNNEEDED_HTML
+
+meta      SUBJ_UNNEEDED_HTML            __SUBJ_UNNEEDED_HTML && !__NOT_SPOOFED && !__RP_MATCHES_RCVD && !__VIA_ML 
+describe  SUBJ_UNNEEDED_HTML            Unneeded HTML formatting in Subject:
+##} SUBJ_UNNEEDED_HTML
+
 ##{ SUSP_UTF8_WORD_FROM
 
 meta       SUSP_UTF8_WORD_FROM         __4BYTE_UTF8_WORD_FROM
 describe   SUSP_UTF8_WORD_FROM         Word in From name using only suspicious UTF-8 characters
 #score      SUSP_UTF8_WORD_FROM         2.000	# limit
 ##} SUSP_UTF8_WORD_FROM
-
-##{ SUSP_UTF8_WORD_SUBJ
-
-meta       SUSP_UTF8_WORD_SUBJ         __4BYTE_UTF8_WORD_SUBJ
-describe   SUSP_UTF8_WORD_SUBJ         Word in Subject using only suspicious UTF-8 characters
-#score      SUSP_UTF8_WORD_SUBJ         2.000	# limit
-##} SUSP_UTF8_WORD_SUBJ
 
 ##{ SYSADMIN
 
@@ -4233,6 +4271,12 @@ endif
 endif
 ##} THIS_IS_ADV_SUSP_NTLD if (version >= 3.004002) ifplugin Mail::SpamAssassin::Plugin::WLBLEval
 
+##{ TINY_FLOAT
+
+rawbody        TINY_FLOAT         /\bstyle\s*=\s*"[^"]{0,40}?(?:(?:FONT-SIZE\s*:\s+\dpx|FLOAT\s*:\s+(?:right|left))(?:;\s+)?(?:(?!(?:FONT-SIZE|FLOAT))\w+:\s+\w+;?\s*)*){2}/i
+describe       TINY_FLOAT         Has small-font floating HTML - text obfuscation?
+##} TINY_FLOAT
+
 ##{ TONLINE_FAKE_DKIM
 
 meta        TONLINE_FAKE_DKIM          __HDR_RCVD_TONLINEDE && __DKIM_EXISTS 
@@ -4254,6 +4298,12 @@ tflags         TO_EQ_FM_DIRECT_MX   publish
 meta           TO_EQ_FM_DOM_HTML_IMG    __TO_EQ_FM_DOM_HTML_IMG && !__NOT_SPOOFED && !__CTYPE_MULTIPART_ALT && !__IS_EXCH && !__UNSUB_LINK && !__COMMENT_EXISTS && !__FM_TO_ALL_NUMS && !__DKIM_EXISTS && !__HAS_THREAD_INDEX && !__MSGID_JAVAMAIL && !__RP_MATCHES_RCVD
 describe       TO_EQ_FM_DOM_HTML_IMG    To domain == From domain and HTML image link
 ##} TO_EQ_FM_DOM_HTML_IMG
+
+##{ TO_EQ_FM_DOM_HTML_ONLY
+
+meta           TO_EQ_FM_DOM_HTML_ONLY   __TO_EQ_FM_DOM_HTML_ONLY && !__NOT_SPOOFED && !__CTYPE_MULTIPART_ALT && !HTML_MIME_NO_HTML_TAG && !__IS_EXCH && !__MSGID_BEFORE_RECEIVED && !__FM_TO_ALL_NUMS && !__FROM_LOWER && !__HAS_IN_REPLY_TO && !__BUGGED_IMG && !__FROM_ENCODED_QP && !__MSGID_OK_HEX
+describe       TO_EQ_FM_DOM_HTML_ONLY   To domain == From domain and HTML only
+##} TO_EQ_FM_DOM_HTML_ONLY
 
 ##{ TO_EQ_FM_DOM_SPF_FAIL ifplugin Mail::SpamAssassin::Plugin::SPF
 
@@ -4342,6 +4392,13 @@ describe   TO_TOO_MANY_WFH_01          Work-from-Home + many recipients
 tflags     TO_TOO_MANY_WFH_01          publish
 ##} TO_TOO_MANY_WFH_01
 
+##{ TRANSFORM_LIFE
+
+meta       TRANSFORM_LIFE              __TRANSFORM_LIFE && !__HAS_CAMPAIGNID && !__HAS_SENDER && !__HAS_X_MAILER && !__VIA_ML 
+describe   TRANSFORM_LIFE              Transform your life!
+#score      TRANSFORM_LIFE              2.500	# limit
+##} TRANSFORM_LIFE
+
 ##{ TT_MSGID_TRUNC
 
 header TT_MSGID_TRUNC   Message-Id =~ /^\s*<?[^<>\s]+\[\d+$/
@@ -4399,13 +4456,6 @@ header TVD_FINGER_02    Content-Type =~ /^text\/plain(?:; (?:format=flowed|chars
 rawbody TVD_FLOAT_GENERAL       /\bstyle\s*=\s*"[^"]*\bfloat\s*:\s*[a-z]+\s*">\s*[a-zA-Z]+\s*</i
 describe TVD_FLOAT_GENERAL      Message uses CSS float style
 ##} TVD_FLOAT_GENERAL
-
-##{ TVD_FROM_1
-
-header TVD_FROM_1       From:addr =~ /[^\@0-9]{2}\d{3}\.(?:com|net|org|info|biz)$/i
-#score  TVD_FROM_1	1.0
-describe TVD_FROM_1  From address appears to be a throwaway domain
-##} TVD_FROM_1
 
 ##{ TVD_FUZZY_DEGREE ifplugin Mail::SpamAssassin::Plugin::ReplaceTags
 
@@ -4482,11 +4532,6 @@ describe TVD_INCREASE_SIZE      Advertising for penis enlargement
 body TVD_LINK_SAVE              /\blink to save\b/i
 describe TVD_LINK_SAVE          Spam with the text "link to save"
 ##} TVD_LINK_SAVE
-
-##{ TVD_PH_7
-
-body TVD_PH_7	/\baccount .{0,20}suspen/i
-##} TVD_PH_7
 
 ##{ TVD_PH_BODY_ACCOUNTS_PRE
 
@@ -4692,6 +4737,14 @@ describe T_DATE_IN_FUTURE_96_Q    Date: is 4 days to 4 months after Received: da
 endif
 ##} T_DATE_IN_FUTURE_96_Q ifplugin Mail::SpamAssassin::Plugin::HeaderEval
 
+##{ T_DATE_IN_FUTURE_Q_PLUS ifplugin Mail::SpamAssassin::Plugin::HeaderEval
+
+ifplugin Mail::SpamAssassin::Plugin::HeaderEval
+header   T_DATE_IN_FUTURE_Q_PLUS  eval:check_for_shifted_date('2920', 'undef')
+describe T_DATE_IN_FUTURE_Q_PLUS  Date: is over 4 months after Received: date
+endif
+##} T_DATE_IN_FUTURE_Q_PLUS ifplugin Mail::SpamAssassin::Plugin::HeaderEval
+
 ##{ T_DOC_ATTACH_NO_EXT ifplugin Mail::SpamAssassin::Plugin::MIMEHeader
 
 ifplugin Mail::SpamAssassin::Plugin::MIMEHeader
@@ -4725,14 +4778,6 @@ describe T_DRUGS_ERECTILE_SHORT_SHORTNER Short erectile drugs advert with T_URL_
 endif
 endif
 ##} T_DRUGS_ERECTILE_SHORT_SHORTNER ifplugin Mail::SpamAssassin::Plugin::WLBLEval if (version >= 3.004000)
-
-##{ T_FILL_THIS_FORM_FRAUD_PHISH ifplugin Mail::SpamAssassin::Plugin::ReplaceTags
-
-ifplugin Mail::SpamAssassin::Plugin::ReplaceTags
-  meta     T_FILL_THIS_FORM_FRAUD_PHISH     __FILL_THIS_FORM_FRAUD_PHISH && !__SPOOFED_URL && !__VIA_ML && !__HAS_IN_REPLY_TO && !__THREADED && !__HDR_RCVD_SHOPIFY && !__HAS_ERRORS_TO 
-  describe T_FILL_THIS_FORM_FRAUD_PHISH     Answer suspicious question(s)
-endif
-##} T_FILL_THIS_FORM_FRAUD_PHISH ifplugin Mail::SpamAssassin::Plugin::ReplaceTags
 
 ##{ T_FILL_THIS_FORM_SHORT ifplugin Mail::SpamAssassin::Plugin::ReplaceTags
 
@@ -4880,26 +4925,6 @@ endif
 endif
 ##} T_GB_YOUTUBE_EMAIL if (version >= 4.000000) if can(Mail::SpamAssassin::Conf::feature_capture_rules)
 
-##{ T_HDRS_LCASE
-
-describe       T_HDRS_LCASE            Odd capitalization of message header
-#score          T_HDRS_LCASE            0.10	# limit
-##} T_HDRS_LCASE
-
-##{ T_HDRS_LCASE if !plugin(Mail::SpamAssassin::Plugin::FreeMail)
-
-if !plugin(Mail::SpamAssassin::Plugin::FreeMail)
-  meta         T_HDRS_LCASE            __HDRS_LCASE && !__HDRS_LCASE_KNOWN && !__VIA_ML && !__THREADED && !__UNUSABLE_MSGID && !__DOS_SINGLE_EXT_RELAY && !__DKIM_EXISTS && !__BUGGED_IMG && !__SUBSCRIPTION_INFO && !NO_RELAYS && !__RDNS_NONE && !__MIME_BASE64 && !__SUBJECT_ENCODED_B64 && !__RCD_RDNS_MX_MESSY && !__HTML_LINK_IMAGE && !__RDNS_SHORT && !__TAG_EXISTS_STYLE && !ALL_TRUSTED && !__NOT_SPOOFED && !__RCD_RDNS_SMTP_MESSY && !__NAKED_TO
-endif
-##} T_HDRS_LCASE if !plugin(Mail::SpamAssassin::Plugin::FreeMail)
-
-##{ T_HDRS_LCASE ifplugin Mail::SpamAssassin::Plugin::FreeMail
-
-ifplugin Mail::SpamAssassin::Plugin::FreeMail
-  meta         T_HDRS_LCASE            __HDRS_LCASE && !__HDRS_LCASE_KNOWN && !__VIA_ML && !__freemail_safe && !__THREADED && !__UNUSABLE_MSGID && !__DOS_SINGLE_EXT_RELAY && !__DKIM_EXISTS && !__BUGGED_IMG && !__SUBSCRIPTION_INFO && !NO_RELAYS && !__RDNS_NONE && !__MIME_BASE64 && !__SUBJECT_ENCODED_B64 && !__RCD_RDNS_MX_MESSY && !__HTML_LINK_IMAGE && !__RDNS_SHORT && !__TAG_EXISTS_STYLE && !ALL_TRUSTED && !__NOT_SPOOFED && !__RCD_RDNS_SMTP_MESSY && !__NAKED_TO
-endif
-##} T_HDRS_LCASE ifplugin Mail::SpamAssassin::Plugin::FreeMail
-
 ##{ T_HK_NAME_FM_FROM ifplugin Mail::SpamAssassin::Plugin::FreeMail if (version >= 3.004000)
 
 ifplugin Mail::SpamAssassin::Plugin::FreeMail
@@ -4934,6 +4959,14 @@ ifplugin Mail::SpamAssassin::Plugin::MIMEHeader
   describe     T_HTML_ATTACH         HTML attachment to bypass scanning?
 endif
 ##} T_HTML_ATTACH ifplugin Mail::SpamAssassin::Plugin::MIMEHeader
+
+##{ T_HTML_TAG_BALANCE_CENTER ifplugin Mail::SpamAssassin::Plugin::HTMLEval
+
+ifplugin Mail::SpamAssassin::Plugin::HTMLEval
+  meta       T_HTML_TAG_BALANCE_CENTER       __HTML_TAG_BALANCE_CENTER && !__RCD_RDNS_MAIL_MESSY && !__RCD_RDNS_SMTP_MESSY 
+  describe   T_HTML_TAG_BALANCE_CENTER       Malformatted HTML
+endif
+##} T_HTML_TAG_BALANCE_CENTER ifplugin Mail::SpamAssassin::Plugin::HTMLEval
 
 ##{ T_ISO_ATTACH ifplugin Mail::SpamAssassin::Plugin::MIMEHeader
 
@@ -5116,17 +5149,6 @@ ifplugin Mail::SpamAssassin::Plugin::ReplaceTags
 endif
 ##} T_PDS_BTC_HACKER ifplugin Mail::SpamAssassin::Plugin::ReplaceTags
 
-##{ T_PDS_BTC_NTLD if (version >= 3.004002) ifplugin Mail::SpamAssassin::Plugin::WLBLEval
-
-if (version >= 3.004002)
-ifplugin Mail::SpamAssassin::Plugin::WLBLEval
-meta     T_PDS_BTC_NTLD ( __BITCOIN_ID && __FROM_ADDRLIST_SUSPNTLD )
-describe T_PDS_BTC_NTLD Bitcoin suspect NTLD
-#score    T_PDS_BTC_NTLD 2.0 # limit
-endif
-endif
-##} T_PDS_BTC_NTLD if (version >= 3.004002) ifplugin Mail::SpamAssassin::Plugin::WLBLEval
-
 ##{ T_PDS_EMPTYSUBJ_URISHRT ifplugin Mail::SpamAssassin::Plugin::WLBLEval if (version >= 3.004000)
 
 ifplugin Mail::SpamAssassin::Plugin::WLBLEval
@@ -5148,15 +5170,6 @@ describe T_PDS_FREEMAIL_REPLYTO_URISHRT Freemail replyto with URI shortener
 endif
 endif
 ##} T_PDS_FREEMAIL_REPLYTO_URISHRT ifplugin Mail::SpamAssassin::Plugin::WLBLEval if (version >= 3.004000)
-
-##{ T_PDS_FROM_2_EMAILS if can(Mail::SpamAssassin::Conf::perl_min_version_5010000)
-
-if can(Mail::SpamAssassin::Conf::perl_min_version_5010000)
-  meta       T_PDS_FROM_2_EMAILS        __PDS_FROM_2_EMAILS && !__VIA_ML && !__VIA_RESIGNER && !__MSGID_JAVAMAIL && !__RCD_RDNS_MAIL_MESSY && !__RCD_RDNS_SMTP_MESSY && !__DKIM_EXISTS 
-  describe   T_PDS_FROM_2_EMAILS        From header has multiple different addresses
-#  score      T_PDS_FROM_2_EMAILS        3.500	# limit
-endif
-##} T_PDS_FROM_2_EMAILS if can(Mail::SpamAssassin::Conf::perl_min_version_5010000)
 
 ##{ T_PDS_FROM_2_EMAILS_SHRTNER ifplugin Mail::SpamAssassin::Plugin::WLBLEval if (version >= 3.004000)
 
@@ -5186,17 +5199,6 @@ ifplugin Mail::SpamAssassin::Plugin::ReplaceTags
 #  score    T_PDS_LTC_HACKER 2.0 # limit
 endif
 ##} T_PDS_LTC_HACKER ifplugin Mail::SpamAssassin::Plugin::ReplaceTags
-
-##{ T_PDS_NO_FULL_NAME_SPOOFED_URL ifplugin Mail::SpamAssassin::Plugin::WLBLEval if (version >= 3.004000)
-
-ifplugin Mail::SpamAssassin::Plugin::WLBLEval
-if (version >= 3.004000)
-meta     T_PDS_NO_FULL_NAME_SPOOFED_URL __PDS_MSG_1024 && __KHOP_NO_FULL_NAME && __SPOOFED_URL && !(__VIA_ML || __SENDER_BOT || __YAHOO_BULK || __UNSUB_LINK || __THREADED || __URL_SHORTENER)
-describe T_PDS_NO_FULL_NAME_SPOOFED_URL HTML message short, T_SPOOFED_URL and T_KHOP_NO_FULL_NAME
-#score    T_PDS_NO_FULL_NAME_SPOOFED_URL 0.75 # limit
-endif
-endif
-##} T_PDS_NO_FULL_NAME_SPOOFED_URL ifplugin Mail::SpamAssassin::Plugin::WLBLEval if (version >= 3.004000)
 
 ##{ T_PDS_PRO_TLD if (version >= 3.004002) ifplugin Mail::SpamAssassin::Plugin::WLBLEval
 
@@ -5241,17 +5243,6 @@ describe T_PDS_SHORTFWD_URISHRT_QP Apparently a short fwd/re with URI shortener
 endif
 endif
 ##} T_PDS_SHORTFWD_URISHRT_QP ifplugin Mail::SpamAssassin::Plugin::WLBLEval if (version >= 3.004000)
-
-##{ T_PDS_SHORT_SPOOFED_URL ifplugin Mail::SpamAssassin::Plugin::WLBLEval if (version >= 3.004000)
-
-ifplugin Mail::SpamAssassin::Plugin::WLBLEval
-if (version >= 3.004000)
-meta     T_PDS_SHORT_SPOOFED_URL __PDS_MSG_1024 && __SPOOFED_URL && !(__VIA_ML || __SENDER_BOT || __YAHOO_BULK || __UNSUB_LINK || __THREADED || __URL_SHORTENER)
-describe T_PDS_SHORT_SPOOFED_URL HTML message short and T_SPOOFED_URL (S_U_FP)
-#score    T_PDS_SHORT_SPOOFED_URL 2.0
-endif
-endif
-##} T_PDS_SHORT_SPOOFED_URL ifplugin Mail::SpamAssassin::Plugin::WLBLEval if (version >= 3.004000)
 
 ##{ T_PDS_TINYSUBJ_URISHRT ifplugin Mail::SpamAssassin::Plugin::WLBLEval if (version >= 3.004000)
 
@@ -5308,15 +5299,6 @@ ifplugin Mail::SpamAssassin::Plugin::MIMEHeader # {
   describe T_REMOTE_IMAGE	Message contains an external image
 endif
 ##} T_REMOTE_IMAGE ifplugin Mail::SpamAssassin::Plugin::MIMEHeader # {
-
-##{ T_SCC_CTMPP ifplugin Mail::SpamAssassin::Plugin::MIMEHeader
-
-ifplugin Mail::SpamAssassin::Plugin::MIMEHeader
-describe	T_SCC_CTMPP	Uncommon Content-Type
-meta		T_SCC_CTMPP	__SCC_CTMPP
-tflags		T_SCC_CTMPP	publish
-endif
-##} T_SCC_CTMPP ifplugin Mail::SpamAssassin::Plugin::MIMEHeader
 
 ##{ T_SENT_TO_EMAIL_ADDR if (version >= 3.004002) ifplugin Mail::SpamAssassin::Plugin::WLBLEval
 
@@ -5667,6 +5649,12 @@ describe    URI_MALWARE_SCMS   Link to malware exploit download (.SettingContent
 tflags      URI_MALWARE_SCMS   publish
 ##} URI_MALWARE_SCMS
 
+##{ URI_OBFU_TLD
+
+meta          URI_OBFU_TLD      __URI_OBFU_TLD && !__MSGID_OK_HOST
+describe      URI_OBFU_TLD      URI top-level domain with space obfuscation
+##} URI_OBFU_TLD
+
 ##{ URI_ONLY_LOW_CONTRAST
 
 meta        URI_ONLY_LOW_CONTRAST HTML_FONT_LOW_CONTRAST && __BODY_URI_ONLY 
@@ -5873,6 +5861,13 @@ meta       XM_LIGHT_HEAVY              __XM_LIGHT_HEAVY && !__HAS_X_BEEN_THERE
 describe   XM_LIGHT_HEAVY              Special edition of a MUA
 #score      XM_LIGHT_HEAVY              2.500	# limit
 ##} XM_LIGHT_HEAVY
+
+##{ XM_ONE_WORD
+
+meta       XM_ONE_WORD                 __XM_ONE_WORD_UNKNOWN && !__L_CTE_7BIT && !__HAS_X_MAILING_LIST 
+describe   XM_ONE_WORD                 X-Mailer only one word
+#score      XM_ONE_WORD                 2.000	# limit
+##} XM_ONE_WORD
 
 ##{ XM_PHPMAILER_FORGED
 
@@ -6813,8 +6808,6 @@ meta        __45_ALNUM_URI_O    __45_ALNUM_URI && !__64_ANY_URI && !__128_ALNUM_
 
 header     __4BYTE_UTF8_WORD_FROM      From:name =~ /(?:\xf0\x9d[\x90-\x9f][\x80-\xbf]){3,10}/
 
-header     __4BYTE_UTF8_WORD_SUBJ      Subject =~ /(?:\xf0\x9d[\x90-\x9f][\x80-\xbf]){3,10}/
-
 uri         __64_ANY_URI        m;[/?]\w{64,}$;i
 
 body        __ACCESS_RESTORE     /\bto (?:(?:restore|regain) access|(?:remove|uplift) (?:the|this) suspens|continue using your (?:account|online|mailbox)|zugreifen wiederhergestellt)/i
@@ -7747,16 +7740,6 @@ header __FROM_ALL_HEX	    From:addr =~ /^(?!(?:19|20)\d\d[01]\d[0-3]\d)(?![0-9a-
 
 header         __FROM_ALL_NUMS      From:addr =~ /^\d+@/
 
-header      __FROM_AMEX          From =~ /american\s?express/i
-
-header      __FROM_ASB_BANK      From:addr =~ /\basb\.co\.nz$/i
-
-header      __FROM_BANK_LOOSE    From =~ /ban(?:k|co)/i
-
-header      __FROM_CHASE         From:addr =~ /chase(?:2?-?paymentech)\.com$/i
-
-header      __FROM_CMNWLTH_BANK  From:addr =~ /\bcommonwealth\.com\.au$/i
-
 header	 __FROM_DNS		From =~ /(?<![^\w.-])dns(?:admin)?\@/i
 
 meta        __FROM_DOM_ADMIN     __FROM_ADMIN && __PDS_FROM_NAME_TO_DOMAIN
@@ -7764,8 +7747,6 @@ meta        __FROM_DOM_ADMIN     __FROM_ADMIN && __PDS_FROM_NAME_TO_DOMAIN
 header      __FROM_DOM_INFO    From:addr =~ /\.info$/i
 
 header __FROM_EBAY	From:addr =~ /\@ebay\.com$/i
-
-header      __FROM_EBAY_LOOSE    From =~ /\be-?bay\b/i
 
 header         __FROM_EQ_ORG_1       ALL =~ /\nFrom: "?([^\n]+)"? <[^>]+>\n.*Organization: \1\n/ism
 
@@ -7802,11 +7783,7 @@ endif
 header	 __FROM_FULL_NAME	From:name =~ /^[^a-z[:punct:][:cntrl:]\d\s][^[:punct:][:cntrl:]\d\s]*[[:punct:]\s]+[^a-z[:punct:][:cntrl:]\d\s]/
 tflags	 __FROM_FULL_NAME	nice
 
-header      __FROM_HSBC          From:addr =~ /\bhsbc\.co\.uk$/i
-
 header	 __FROM_INFO		From =~ /(?<![^\w.-])info\@/i
-
-header      __FROM_LLOYDSTSB     From:addr =~ /\blloyds(?:tsb)\.(?:co\.uk|com)$/i
 
 header      __FROM_LOWER       ALL =~ /from: \S{5}/
 
@@ -7821,8 +7798,6 @@ endif
 ifplugin Mail::SpamAssassin::Plugin::FreeMail
   meta         __FROM_MISSP_FREEMAIL __FROM_RUNON && (FREEMAIL_FROM || FREEMAIL_REPLYTO)
 endif
-
-meta        __FROM_MISSP_PHISH   __FROM_MISSPACED && (__FROM_ASB_BANK || __FROM_AMEX || __FROM_BANK_LOOSE || __FROM_CHASE || __FROM_CMNWLTH_BANK || __FROM_EBAY_LOOSE || __FROM_HSBC || __FROM_LLOYDSTSB || __FROM_PAYPAL_LOOSE || __FROM_WELLSFARGO || __FROM_WESTERNUNION)
 
 meta           __FROM_MISSP_REPLYTO  __FROM_RUNON && __HAS_REPLY_TO
 
@@ -7844,17 +7819,11 @@ header     __FROM_NAME_PAYPALCOM       From:name =~ /\bpaypal\.com\b/i
 
 header __FROM_PAYPAL	From:addr =~ /\@paypal\.com$/i
 
-header      __FROM_PAYPAL_LOOSE  From =~ /paypal/i
-
 header         __FROM_RUNON          From =~ /\S+<\w+/
 
 header         __FROM_RUNON_UNCODED  From:raw =~ /\S+(?<!\?=)<\w+/
 
 header __FROM_WEB_DAEMON From:addr =~ /(?:apache|www|web|tomcat|\biis\b).*\@/i
-
-header      __FROM_WELLSFARGO    From:addr =~ /wellsfargo\.com$/i
-
-header      __FROM_WESTERNUNION  From:addr =~ /westernunion\.com$/i
 
 header     __FROM_WORDY                From:addr =~ /^(?:(?:[A-Z][A-Za-z]+|or|&)\.)+[A-Z][A-Za-z]+\@/
 
@@ -7913,6 +7882,8 @@ endif
 ifplugin Mail::SpamAssassin::Plugin::ReplaceTags
   header        __FUZZY_WELLSFARGO_FROM  From:name =~ /(?=<W>)(?!Wells[-\s]?Fargo)<W><E><L><L><S>\S{0,2}[-\s]?<F><A><R><G><O>/i
 endif
+
+meta        __GAPPY_LOW_CONTRAST  HTML_FONT_LOW_CONTRAST && __GAPPY_SUBJECT 
 
 if can(Mail::SpamAssassin::Conf::feature_bug6558_free)
   body       __GAPPY_SALES_LEADS         /\b(?:business|e?-?mail|your|marketing|advertising)\s(?!sales|leads|campaign)(?:s\s?a\s?l\s?e\s?s|l\s?e\s?a\s?d\s?s|c\s?a\s?m\s?p\s?a\s?i\s?g\s?n)\b/i
@@ -8429,8 +8400,6 @@ meta       __LINKED_IMG_NOT_RCVD_LINK  __URI_IMG_LINKEDIN && !__HDR_RCVD_LINKEDI
 
 meta        __LIST_PARTIAL         __DOS_HAS_LIST_UNSUB && !__DOS_HAS_LIST_ID
 
-meta       __LIST_PARTIAL_SHORT_MSG     __HTML_LENGTH_0000_1024 && __LIST_PARTIAL 
-
 meta        __LIST_PRTL_PUMPDUMP   __LIST_PARTIAL && __PD_CNT_1
 
 meta        __LIST_PRTL_SAME_USER  __LIST_PARTIAL && __TO_EQ_FROM_USR
@@ -8444,10 +8413,12 @@ tflags      __LOCK_MAILBOX       multiple maxhits=2
 
 full     __LONGLINE	/^[^\r\n]{998}/m
 
+meta        __LONGLN_LOW_CONTRAST HTML_FONT_LOW_CONTRAST && __LONGLINE
+
 rawbody   __LONG_INVIS_DIV              /<div\s+style\s*=\s*"(?:(?<!-)visibility\s*:\s*hidden|display\s*:\s*none)\s*">[^<\s]{1400}/i
 
 if can(Mail::SpamAssassin::Conf::feature_bug6558_free)
-  meta      __LONG_STY_INVIS              __STY_INVIS && __LONGLINE
+  meta      __LONG_STY_INVIS              __STY_INVIS_2 && __LONGLINE
 endif
 
 if !plugin(Mail::SpamAssassin::Plugin::ReplaceTags)
@@ -8759,10 +8730,6 @@ header __NAME_EQ_EMAIL	From:raw =~ /([\w+.-]+\@[\w.-]+\.\w\w+)["'`\s]*<\s*\1>/i
 
 header __NAME_IS_EMAIL	From:raw =~ /\w\@[\w.-]+\.\w\w+["'`]*\s*<\w+\@\w/
 
-body     __NEVER_HEAR_EN      /(?:never hear me again|destroy all your secrets|not bother you again|leave you alone)/i
-
-body     __NEVER_HEAR_IT      /eliminare tutti i tuoi segreti|Ti garantisco che non ti disturbe/i
-
 meta       __NEWEGG_IMG_NOT_RCVD_NEGG  __URI_IMG_NEWEGG && !__HDR_RCVD_NEWEGG
 
 body       __NEW_PRODUCTS              /\bhere are new products|\b(?:Our company|we) (?:has |have )?(?:(?:recently|just|newly) (?:introduce|release|launche)[ds](?: a| our| the)? (?:new|(?:\w+\s){1,5}below)|a new (?!cat\s|kitten\s|dog\s|puppy\s|pet\s|baby\s|child\s|boy\s|girl\s)(?:\w+\s){1,5} here)|recently,? our company (?:launch|releas)ed|\bI want to recommend a new (?:\w+ ){1,5}(?:we|our)\b|latest version of our (?:stock|product)|\b(?:our|a) new (?:\w+ ){1,3}has (?:recently|just) been released/i
@@ -9038,8 +9005,6 @@ body     __PDS_OFFER_ONLY_AMERICA /This offer (?:is )?(?:only )?for (?:United St
 endif
 endif
 
-header   __PDS_PHP_EVAL1 X-PHP-Originating-Script =~ /eval..'d code/i
-
 if !plugin(Mail::SpamAssassin::Plugin::MIMEEval)
   meta    __PDS_QP_1024 0
 endif
@@ -9108,8 +9073,6 @@ meta     __PDS_SPOOF_GMAIL_MID __PDS_FROM_GMAIL && !__PDS_GMAIL_MID && !__FSL_RE
 
 header   __PDS_TONAME_EQ_TOLOCAL To:raw =~ /^\s*['"]?([^'"]+)['"]? <?\1\@/
 
-header  __PDS_TO_BRAND_SUBJECT ALL =~ /^To:\s+<?[^\@]+\@([^\.]+)\.(?:[^\n]+\n+)*^Subject: \"?\1\b/ism
-
 if can(Mail::SpamAssassin::Conf::perl_min_version_5010000)
   header     __PDS_TO_EQ_FROM_NAME_1  ALL =~ /\nTo: (?:[^\n<]{0,80}<)?([^\n\s>]+)>?\n+(?:[^\n]{1,100}\n+)*From:\W+(\1)([^\n\w<]++<)?((?!\1)[^\n">]++)>?\n/ism
 endif
@@ -9129,6 +9092,8 @@ if (version >= 3.004000)
 meta     __PDS_URISHORTENER __URL_SHORTENER
 endif
 endif
+
+header   __PDS_X_PHP_WELLKNOWN   X-PHP-Script =~ m;/\.well-known/;
 
 meta        __PD_CNT_1        (__PUMPDUMP_01+__PUMPDUMP_02+__PUMPDUMP_03+__PUMPDUMP_04+__PUMPDUMP_05+__PUMPDUMP_06+__PUMPDUMP_07+__PUMPDUMP_08+__PUMPDUMP_09+__PUMPDUMP_10) > 0
 
@@ -9160,8 +9125,6 @@ header  __PHP_MUA_1           X-Mailer =~ /^PHP\s?v?\/?\d\./
 header  __PHP_MUA_2           X-Mailer =~ /^PHP\d$/
 
 header  __PHP_NOVER_MUA       X-Mailer =~ /^PHP$/
-
-header     __PHP_ORIG_SCRIPT_EVAL      X-PHP-Originating-Script =~ /\beval\b.*\bcode\b/i
 
 meta       __PHP_ORIG_SCRIPT_SONLY     __HAS_PHP_ORIG_SCRIPT && (__TVD_SPACE_RATIO || __SINGLE_WORD_SUBJ || __OBFUSCATING_COMMENT_B)
 
@@ -9293,13 +9256,11 @@ header      __REPLYTO_NOREPLY          Reply-To =~ /\bno-?reply@/i
 
 header __REPTO_419_FRAUD_AOL_LOOSE Reply-To:addr =~ /^(?=[^\s<>@]+\@aol\.com)(?:(?:a(?:f\.|ljaber)|c(?:hanprivacy|laimdept|ristinabruno|ustom_service)|dhodgkins|evelynjoshua|f(?:d\.|ernandezfernandez)|george_clifford|hernandezrosemary|k\.doreen|l(?:erynnewest|ynnpage)|m(?:_l\.wanczyk|asayohara|rsjanetedwards)|officework|paulpollard|royalpalace|spwalker|usembassy|yurdaaytarkan))\d+\@aol\.com$/i
 
-header __REPTO_419_FRAUD_GM_LOOSE Reply-To:addr =~ /^(?=[^\s<>@]+\@gmail\.com)(?:(?:9porssts|a(?:\.wafager|b(?:dullahmundani|u(?:lkareem|shadi))|cecere|isha1976gaddafi|l(?:an\.austin|ex(?:anderpeterson|hoffman)|ghafrij|icedoris|kasimunadi|l(?:enholden|isoncluade)|ure\.wawrenka)|m(?:bassadormarybethleonardl|ericadeliverycomapny|ina(?:ltwaijiri|medjahed))|n(?:dyfox|na(?:llee|sigurlaug)|thonyjblinken)|office1office|radka|shwestwood|tmcarddepartment|ustinbillmark|zi(?:m(?:\.hpremji|hashim(?:donation)?)|z(?:dake|george)))|b(?:a(?:nkcentralasiahalobca|r(?:bersmadar|rister(?:clarkephillips|lordruben)|teld\.huisman))|bongo|e(?:alitoniua|linekra|n(?:ezero|gatl|jaminsarah)|tsyholden)|ill\.lawrence|mwautomobile|oarddept|rendalaporte|uffettwarrene)|c(?:eda\.ogada|h(?:a(?:ngching|r(?:itylisajohnrobinson|l(?:esluenga|tonnewmanus)))|e(?:mchung|nchung))|iticonsultantjohncg|laxtonpaul|o(?:lombasjuan|ntactad)|rist(?:brun?|davis|ydavis(?:donation|foundation))|ustomerservicelacaixa)|d(?:a(?:nnuar|vi(?:d(?:\.loanfirm|larbi|pere|ramirez\.luis)|scarolyn|yax))|e(?:nnisclark|partmentofstate)|hlexpresscompany|minique|ona(?:ldwilliam|tionhelpercare)|rdavidrhama|unsilva)|e(?:benezero|christina|dmundventura|l(?:i(?:bethgomez|sabeth(?:gmuer|maria)|zabethedw)|o(?:diesawadogo|tocashoffice))|m(?:efieleg?|ilyrichmond)|ngr\.des|re(?:nakgeorge|zcelic)|stherkatherine|wynn)|f(?:\.mikhail|a(?:ithdesrie|rahwasam|tme\.mehmed)|blott|irstbank|r(?:a(?:100dub|n(?:c(?:espatrickconnolly|iscamendoza)|k(?:j(?:ane|ody)|linpiesie)))|eelottosweepstake)|spero|ulanlan)|g(?:00gleggewinner|a(?:briel(?:eschmitt|kalia)|rciavincent)|bill|e(?:neralwilliamstony|orgekwame|raldjhjh)|i(?:idp|ocastano)|l(?:enmoore|oriachow)|oo(?:golteam|oglegwiinner)|r(?:aceobia|e(?:ant|energeoffrey)))|h(?:a(?:r(?:gate|ryebert)|sh(?:imyreem|mireem)|zimissa)|e(?:atherbrooeke|ctor(?:castillos|scastillo)|lengiggs)|gold|ildad|o(?:nmackjohn|rnbeckmajordennis|seoky))|i(?:b(?:ed|rahimelizabeth)|mfdeputyoff|n(?:fo\.(?:annedouglas|marviswanczyk)|gridrolle)|rvinekim|smail(?:eman|tarkan))|j(?:a(?:mesokoh|vierlesme)|efferydean|o(?:edward|hn(?:griffn|nietaylor|r(?:awlings|oxfordjr)|sonwilson|uba|walterlove|a)|n(?:athanhaskel|hugo)|seph(?:acevedo|babatunde|ichael)|vannyanderson)|rawlings|uliewatson)|k(?:a(?:l(?:iaksandr|tschmidtdavid)|malnizar|rabo\.ramala|t(?:jamess|rinaziako))|ennedy\.sawadogo|halidbuhazza|kasbu|r(?:istinewellenstein|nkl)|un(?:gwei|ioue))|l(?:a(?:rrytoms|ursent|wrencefoundation)|e(?:enasinghs|rynne(?:0west|west))|i(?:amfinchus|fecshortt|liane\.bettencourt|nelink|sa(?:milner|robin))|john|oughreymargaret|s(?:arbn|chantal)|u(?:ckywinners|sba\.moored)|y(?:\.cheapiseth|diawright|n(?:\.arthur|cmba|nmkl)))|m(?:a(?:incare|jor(?:dennishornbeck|townsend)|lletman|n(?:duesq|fran|uelfranco(?:(?:donation|foundation|spende))?)|r(?:i(?:ahhills|opabl)|kroth|shalh|tinamayer|y(?:franson|josen))|u(?:hin|rhinck)|viswan(?:czyk(?:(?:foundation|k))?)?)|brons|c\.cheadychang|dredban|el(?:aniekreiss|vidabullock)|gfrederick|i(?:c(?:h(?:ael\.woosley|ealwuu)|w)|k(?:e\.weirsky\.foundational|hai(?:\.fridman|lfridm))|ntonjustin|ss\.yasmineibrahim)|k(?:ent|untjoro)|mrstephen|oham(?:edabdul|m(?:daljililati|edshamekh))|r(?:\.(?:elbahi\.mohammed\.|justinmaxwell|tonyelumelu)|cjames|ericschmid|hanimuhammad|jamesmc|morgangomez|richardanthony|s(?:\.susanread|a(?:ishaalqadafi|ngela|shaalqaddfi)|dominiquethomas|evelynbrown|fatimaamiraqureshi|hamima|jackman|lisamilner|ma(?:riaelizabethscheffle|ureens|yaoliver)|r(?:eem|obinsanders|uthsmith)|sarahbenjamin|victoriaedmond))|s(?:\.ellagolan|agent|golaan|smadar)|ustadris)|n(?:aomiiwasaki|eilt(?:rotter)?|icholas\.jose|obuyuki\.hirano)|o(?:\.peace|fficerricherd|hallkenneth|lenasheve|rabankheadofficelometogo|xfaminternationa)|p(?:aul(?:eed|n)|b(?:ph202lay|rookk)|e(?:rezdonlorenzo|ter(?:\.waddell|guggi|kenin|stephen))|hillip\.richead)|q(?:iquanzhou|nzeng)|r(?:a(?:kidy|lhashimi|ymondaba)|e(?:alyh|beccagarang|em(?:has(?:himy|m)|n)|plyback|v(?:\.jamesabel|fr(?:ankjackson|paulwilliams)))|icha(?:miller|rdw(?:ahl|illis))|main|o(?:b(?:erthanandez|inf)|naldmorris|s(?:a\.gomes|ekipkalya))|raya|t\.rev\.ericmark|uddicklana)|s(?:a(?:l(?:ehhussienconsult|imzaid)|rfiafarfask)|cott(?:henryjames|peters)|e(?:cretservicce|rgeantrobertbrown)|gt(?:\.monicab|ireneb)|h(?:anemissler|ery(?:\.gtl|etr)|inawatrathaksin)|im(?:lkheng|onhei)|op(?:adam|hiajesse)|peelman|t(?:anleyjohn|ephentam)|u(?:iyang|n\.hor|sanneklatten)|weeneyjohnson)|t(?:a(?:mmywebster|y(?:ebsouami|lorcathy))|e(?:nreyrosilvana|rryparkins)|h(?:ailandbankoffice|e(?:ara\.choy|odorosloannis))|imothymetheny|lyerdonald|o(?:m(?:ander|c(?:hrist|rist(?:(?:donation|foundation))?)|spende)|ny(?:\.chung|robins|zimpro)|shikazusendo))|u(?:derleyen|marukareem|n(?:claimedfunds|ited(?:bankforafrica\.plc|nation(?:organization|s)))|s(?:alotery|departmentofjustice))|v(?:anderwesthuizen|e(?:enapatel|r(?:a(?:aellen|hollinkvan)|enichekaterinaekaterina))|i(?:ctoriaabraham|dalpamela|ngut)|johannes)|w(?:a(?:dp|hlr(?:ichard)?|nczykm|rrenebuffett)|ellensteinfoundation|hatsappofficial|i(?:elandherzog\.sw\.herad|ll(?:clark|iamsmartyrs))|u\.office|ww\.moneygram)|y(?:\.oguzhan|anghoseok|doo|o(?:ngkm|usefzongo))|z(?:bank|enithbankplconline|kiaslan|minhong)))\d+\@gmail\.com$/i
+header __REPTO_419_FRAUD_GM_LOOSE Reply-To:addr =~ /^(?=[^\s<>@]+\@gmail\.com)(?:(?:9porssts|a(?:\.wafager|b(?:dullahmundani|u(?:lkareem|shadi))|cecere|isha1976gaddafi|l(?:an\.austin|ex(?:anderpeterson|hoffman)|ghafrij|icedoris|kasimunadi|l(?:enholden|isoncluade)|ure\.wawrenka)|m(?:bassadormarybethleonardl|ericadeliverycomapny|ina(?:ltwaijiri|medjahed))|n(?:dyfox|na(?:llee|sigurlaug)|thonyjblinken)|office1office|radka|shwestwood|tmcarddepartment|ustinbillmark|zi(?:m(?:\.hpremji|hashim(?:donation)?)|z(?:dake|george)))|b(?:a(?:nkcentralasiahalobca|r(?:bersmadar|rister(?:clarkephillips|lordruben)|teld\.huisman))|bongo|e(?:alitoniua|linekra|n(?:ezero|gatl|jaminsarah)|tsyholden)|ill\.lawrence|mwautomobile|oarddept|rendalaporte|uffettwarrene)|c(?:eda\.ogada|h(?:a(?:ngching|r(?:itylisajohnrobinson|l(?:esluenga|tonnewmanus)))|e(?:mchung|nchung))|iticonsultantjohncg|laxtonpaul|o(?:lombasjuan|ntactad)|rist(?:brun?|davis|ydavis(?:donation|foundation))|ustomerservicelacaixa)|d(?:a(?:nnuar|vi(?:d(?:\.loanfirm|larbi|pere|ramirez\.luis)|scarolyn|yax))|e(?:nnisclark|partmentofstate)|hlexpresscompany|minique|ona(?:ldwilliam|tionhelpercare)|r(?:davidrhama|rhamahassan)|unsilva)|e(?:benezero|christina|dmundventura|l(?:i(?:bethgomez|sabeth(?:gmuer|maria)|zabethedw)|o(?:diesawadogo|tocashoffice))|m(?:efieleg?|ilyrichmond)|ngr\.des|re(?:nakgeorge|zcelic)|stherkatherine|wynn)|f(?:\.mikhail|a(?:ithdesrie|rahwasam|tme\.mehmed)|blott|irstbank|r(?:a(?:100dub|n(?:c(?:espatrickconnolly|iscamendoza)|k(?:j(?:ane|ody)|linpiesie)))|eelottosweepstake)|spero|ulanlan)|g(?:00gleggewinner|a(?:briel(?:eschmitt|kalia)|rciavincent)|bill|e(?:neralwilliamstony|orgekwame|raldjhjh)|i(?:idp|ocastano)|l(?:enmoore|oriachow)|oo(?:golteam|oglegwiinner)|r(?:aceobia|e(?:ant|energeoffrey)))|h(?:a(?:r(?:gate|ryebert)|sh(?:imyreem|mireem)|zimissa)|e(?:atherbrooeke|ctor(?:castillos|scastillo)|lengiggs|ritagetrustbank)|gold|ildad|o(?:nmackjohn|rnbeckmajordennis|seoky))|i(?:b(?:ed|rahimelizabeth)|mfdeputyoff|n(?:fo\.(?:annedouglas|marviswanczyk)|gridrolle)|rvinekim|smail(?:eman|tarkan))|j(?:a(?:mesokoh|vierlesme)|efferydean|o(?:edward|hn(?:griffn|nietaylor|r(?:awlings|oxfordjr)|sonwilson|uba|walterlove|a)|n(?:a(?:haskel|thanhaskel)|hugo)|seph(?:acevedo|babatunde|ichael)|vannyanderson)|rawlings|uliewatson)|k(?:a(?:l(?:iaksandr|tschmidtdavid)|malnizar|rabo\.ramala|t(?:jamess|rinaziako))|ennedy\.sawadogo|halidbuhazza|kasbu|r(?:istinewellenstein|nkl)|un(?:gwei|ioue))|l(?:a(?:rrytoms|ursent|wrencefoundation)|e(?:enasinghs|rynne(?:0west|west))|i(?:amfinchus|fecshortt|liane\.bettencourt|nelink|sa(?:milner|robin))|john|oughreymargaret|s(?:arbn|chantal)|u(?:ckywinners|sba\.moored)|y(?:\.cheapiseth|diawright|n(?:\.arthur|cmba|nmkl)))|m(?:a(?:incare|jor(?:dennishornbeck|townsend)|lletman|n(?:duesq|fran|uelfranco(?:(?:donation|foundation|spende))?)|r(?:i(?:ahhills|opabl)|kroth|shalh|tinamayer|y(?:franson|josen))|u(?:hin|rhinck)|viswan(?:czyk(?:(?:foundation|k))?)?)|brons|c\.cheadychang|dredban|el(?:aniekreiss|vidabullock)|gfrederick|i(?:c(?:h(?:ael\.woosley|ealwuu)|w)|k(?:e\.weirsky\.foundational|hai(?:\.fridman|lfridm))|ntonjustin|ss\.yasmineibrahim)|k(?:ent|untjoro)|mrstephen|oham(?:edabdul|m(?:daljililati|edshamekh))|r(?:\.(?:elbahi\.mohammed\.|justinmaxwell|tonyelumelu)|cjames|ericschmid|hanimuhammad|jamesmc|morgangomez|richardanthony|s(?:\.susanread|a(?:ishaalqadafi|ngela|shaalqaddfi)|dominiquethomas|evelynbrown|fatimaamiraqureshi|hamima|jackman|lisamilner|ma(?:riaelizabethscheffle|ureens|yaoliver)|r(?:eem|obinsanders|uthsmith)|sarahbenjamin|victoriaedmond))|s(?:\.ellagolan|agent|golaan|smadar)|ustadris)|n(?:aomiiwasaki|eilt(?:rotter)?|icholas\.jose|obuyuki\.hirano)|o(?:\.peace|fficerricherd|hallkenneth|lenasheve|rabankheadofficelometogo|xfaminternationa)|p(?:aul(?:eed|n)|b(?:ph202lay|rookk)|e(?:rezdonlorenzo|ter(?:\.waddell|guggi|kenin|stephen))|hillip\.richead)|q(?:iquanzhou|nzeng)|r(?:a(?:kidy|lhashimi|ymondaba)|e(?:alyh|beccagarang|em(?:has(?:himy|m)|n)|plyback|v(?:\.jamesabel|fr(?:ankjackson|paulwilliams)))|icha(?:miller|rdw(?:ahl|illis))|main|o(?:b(?:erthanandez|inf)|naldmorris|s(?:a\.gomes|ekipkalya))|raya|t\.rev\.ericmark|uddicklana)|s(?:a(?:l(?:ehhussienconsult|imzaid)|rfiafarfask)|cott(?:henryjames|peters)|e(?:cretservicce|rgeantrobertbrown)|gt(?:\.monicab|ireneb)|h(?:anemissler|ery(?:\.gtl|etr)|inawatrathaksin)|im(?:lkheng|onhei)|op(?:adam|hiajesse)|peelman|t(?:anleyjohn|ephentam)|u(?:iyang|n\.hor|sanneklatten)|weeneyjohnson)|t(?:a(?:mmywebster|y(?:ebsouami|lorcathy))|e(?:nreyrosilvana|rryparkins)|h(?:ailandbankoffice|e(?:ara\.choy|odorosloannis))|imothymetheny|lyerdonald|o(?:m(?:ander|c(?:hrist|rist(?:(?:donation|foundation))?)|spende)|ny(?:\.chung|robins|zimpro)|shikazusendo))|u(?:derleyen|marukareem|n(?:claimedfunds|ited(?:bankforafrica\.plc|nation(?:organization|s)))|s(?:alotery|departmentofjustice))|v(?:anderwesthuizen|e(?:enapatel|r(?:a(?:aellen|hollinkvan)|enichekaterinaekaterina))|i(?:ctoriaabraham|dalpamela|ngut)|johannes)|w(?:a(?:dp|hlr(?:ichard)?|nczykm|rrenebuffett)|ellensteinfoundation|hatsappofficial|i(?:elandherzog\.sw\.herad|ll(?:clark|iamsmartyrs))|u\.office|ww\.moneygram)|y(?:\.oguzhan|anghoseok|doo|o(?:ngkm|usefzongo))|z(?:bank|enithbankplconline|kiaslan|minhong)))\d+\@gmail\.com$/i
 
 header __REPTO_419_FRAUD_YH_LOOSE Reply-To:addr =~ /^(?=[^\s<>@]+\@yahoo\.com)(?:(?:a(?:driantongson|ilmohammed|lesiakalina|nnhester\.usa)|b(?:ank\.phbng|e(?:linekra|n(?:jaminb|nicholas))|riceangela)|c(?:\.aroline|h(?:arlesscharf|jackson)|juan|ythiamiller\.un)|dhamilton|e(?:denvictor|ricalbert)|federal\.r|j(?:a(?:ckson\.davis|netemoon)|kimyong)|k(?:altschmidtdavid|elvinmark|im(?:\.leang|leang))|l(?:e(?:a_edem|hman)|isarobinson_|y_cheapiseth)|m(?:\.kogi|arie_avis|dzsesszika|elissalewis|o(?:hammedaahil|keye))|o(?:biorahkenneth|legkozyrev|mranshaalan)|peterlee|r(?:alphw(?:\.johnson|johnson)|o(?:bertbailey|serichard))|s(?:amthong|igurlauganna|leo|pwalker|te(?:fanopessina|vecox\.))|tylerhess\.|vanserge|will(?:clark|smi)|xianglongdai))\d+\@yahoo\.com$/i
 
 header    __REPTO_CHN_FREEM             Reply-To =~ /\@(?:sina|aliyun)\.com/i
-
-header     __REPTO_INFONUMSCOM         Reply-To:addr =~ /^info@\d{5,}\.com$/i
 
 header    __REPTO_RUS_FREEM             Reply-To =~ /\@mail\.ru/i
 
@@ -9458,6 +9419,9 @@ header   __SUBJ_RE		Subject =~ /^(?:R[eE]|S[vV]|V[sS]|A[wW]):/
 
 header __SUBJ_SHORT	Subject =~ /^.{0,8}$/
 
+header    __SUBJ_UNNEEDED_HTML          Subject =~ /%[0-9a-f][0-9a-f]/i
+tflags    __SUBJ_UNNEEDED_HTML          multiple maxhits=3
+
 header     __SUBJ_USB_DRIVES          Subject =~ /\bUSB (?:[Ff]lash )?[Dd]rives\b/
 
 body	 __SUBSCRIPTION_INFO	/\b(?:e?newsletters?|(?:un)?(?:subscrib|register)|you(?:r| are) subscri(?:b|ption)|opt(?:.|ing)?out\b|further info|you do ?n[o']t w(?:ish|ant)|remov\w{1,3}.{1,9}\blists?\b|to your white.?list)/i
@@ -9500,6 +9464,8 @@ header         __TO_ALL_NUMS        To:addr =~ /^\d+@/
 meta           __TO_EQ_FM_DIRECT_MX __TO_EQ_FROM && __DOS_DIRECT_TO_MX
 
 meta           __TO_EQ_FM_DOM_HTML_IMG  __TO_EQ_FROM_DOM && __HTML_LINK_IMAGE
+
+meta           __TO_EQ_FM_DOM_HTML_ONLY __TO_EQ_FROM_DOM && MIME_HTML_ONLY
 
 if !plugin(Mail::SpamAssassin::Plugin::SPF)
   meta           __TO_EQ_FM_DOM_SPF_FAIL  0
@@ -9780,9 +9746,6 @@ body        __UNSUB_GOOG_FORM    m,Unsub?sc?ribe\s<?https?://docs\.google\.com/f
 uri	 __UNSUB_LINK	/\b(?:(?:un)?subscri(?:ber?|ptions?)|abuses?|opt(?:ing)?.?out)\b/i
 tflags	 __UNSUB_LINK	nice
 
-rawbody	 __UNSUB_MAILTO	/href=["']?mailto:[^>]{6,60}>[^<]{0,6}\b(?:(?:un)?subscri(?:ber?|ptions?)|abuses?|opt(?:ing)?.?out)\b/
-tflags	 __UNSUB_MAILTO	nice
-
 body        __UPGR_MAILBOX       /\b(?:up(?:g[ra]+d(?:e|ing)|date) (?:(?:[hw]as|and)\s(?:[a-z]+\s){1,5})?(?:o[nf] )?(?:your )?(?:mail\s?box|(?:web ?|e-?)mail)|(?:web ?|e-?)mail Upgrade cuenta|atualiz(?:e|ar) (?:a|sua) caixa de correio|click\S{0,10} (?:here(?:[:\.\s]{0,5}\S{0,10}http\S{10,80})?|below)(?: link)? to (?:(?:complete|finish|increase) )?(?:(?:the|this|your)\s)?(?:up(?:date|grade)|(?:web ?|e-?)?mail(?:\s?box)? (?:size|quota|limit))|utrzymania aktywnego konta|request (?:for )additional storage|you (?:have )?(?:failed|refused) to up(?:date|grade))\b/i
 
 uri         __UPPERCASE_URI        /^[^:A-Z]+[A-Z]/
@@ -9895,6 +9858,8 @@ tflags      __URI_MAILTO              multiple maxhits=16
 
 uri            __URI_MONERO     /buy-monero/i
 
+body          __URI_OBFU_TLD    /\.\s(?:c\so\sm|n\se\st|o\sr\sg|b\si\sz|i\sn\sf\so)/i
+
 meta      __URI_ONLY_MSGID_MALF         __BODY_URI_ONLY && __MSGID_NOFQDN2
 
 meta        __URI_PHISH    __HAS_ANY_URI && !__URI_GOOGLE_DOC && !__URI_GOOG_STO_HTML && (__EMAIL_PHISH || __ACCT_PHISH)
@@ -9903,7 +9868,7 @@ uri        __URI_PHP_REDIR             m;/redirect\.php\?;i
 
 uri        __URI_PRODUCT_AMAZON        m,://www\.amazon\.(?:com|co\.uk|[a-z][a-z])/dp/[a-z0-9]{10}/,i
 
-uri         __URI_TRY_3LD     m,^https?://(?:try(?!r\.codeschool)|start|get(?!\.adobe)|save|check(?!out)|act|compare|join|learn(?!ing)|request|visit(?!or|\.vermont)|my(?!sub|turbotax|news\.apple|a\.godaddy|account|support|build|blob|images?|photos?)\w)[^.]*\.(?:(?!list-manage|lt\.)[^/.]+\.)+(?:com|net)\b,i
+uri         __URI_TRY_3LD     m,^https?://(?:try(?!r\.codeschool)|start|get(?!\.adobe)|save|check(?!out)|act(?!ion)|compare|join|learn(?!ing)|request|visit(?!or|\.vermont)|my(?!sub|turbotax|news\.apple|a\.godaddy|account|support|build|blob|images?|photos?)\w)[^.]*\.(?:(?!list-manage|lt\.)[^/.]+\.)+(?:com|net)\b,i
 
 uri         __URI_TRY_USME    m,^https?://(?:try|start|get|save|check|act|compare|join|learn|request|visit|my)[^.]*\.[^/]+\.(?:us|me|mobi|club)\b,i
 
@@ -10030,6 +9995,8 @@ header __XM_OL_28004682    X-Mailer =~ /^Microsoft Outlook Express 6.00.2800.468
 header __XM_OL_48072300    X-Mailer =~ /^Microsoft Outlook Express 5.50.4807.2300$/
 
 header __XM_OL_4_72_2106_4  X-Mailer =~ /^Microsoft Outlook Express 4.72.2106.4$/
+
+header     __XM_ONE_WORD_UNKNOWN       X-Mailer =~ /^\s*(?!php|msgsend|send(?:html|inblue|mail)|liveagent|(?:cheetah|xyz|swift|power)mailer|dmdroid|codeigniter|peppered|host(?:odo|edsimply)|smart_send_\d|postfix|contactlab|communigator|magnews|(?:as2|manta|be|mikatiminge|web)mail|edelivery|sellware|WHMCS$|CR$|EMS$|SM[EF]$|ACEM$|RMM\d?|EOW\d|FM$|ZIMACS$|oempro\d|typo\d|drupal|mail(?:eon|ingwork|er|spring|force)|onlineoffice|oscommerce|redmine|m1mailmessage_v\d)\w+\s*$/i
 
 header __XM_OUTLOOK_EXPRESS    X-Mailer =~ /^Microsoft Outlook Express \d/
 

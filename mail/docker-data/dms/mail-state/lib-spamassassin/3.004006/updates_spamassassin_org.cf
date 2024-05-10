@@ -1,4 +1,4 @@
-# UPDATE version 1916975
+# UPDATE version 1917543
 include updates_spamassassin_org/10_default_prefs.cf
 include updates_spamassassin_org/10_hasbase.cf
 include updates_spamassassin_org/20_advance_fee.cf

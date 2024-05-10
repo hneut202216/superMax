@@ -21,9 +21,9 @@ _dmarc.l2-1.ephec-ti.be. IN TXT "v=DMARC1; p=none; rua=mailto:sebiche@l2-1.ephec
 
 ns      IN      A       54.37.15.208 
 www	IN	A	54.37.15.208
-
+	IN      A	54.37.10.151
 blog    IN      CNAME   www
-
+iziplan IN      CNAME   www
 mail    IN      A       54.37.15.208
 
 ;vps-a95e6d63.vps.ovh.net    IN     PTR    mail.l2-1.ephec.be

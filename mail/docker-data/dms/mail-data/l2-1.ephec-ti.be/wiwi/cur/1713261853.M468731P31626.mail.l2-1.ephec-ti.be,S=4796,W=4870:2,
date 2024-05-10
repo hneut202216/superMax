@@ -1,0 +1,74 @@
+Return-Path: <noreply-dmarc-support@google.com>
+Received: from mail.l2-1.ephec-ti.be
+	by mail.l2-1.ephec-ti.be with LMTP
+	id AlX6Gh1NHmaKewAA1srq+w
+	(envelope-from <noreply-dmarc-support@google.com>); Tue, 16 Apr 2024 10:04:13 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by mail.l2-1.ephec-ti.be (Postfix) with ESMTP id 64F1B8608D;
+	Tue, 16 Apr 2024 10:04:13 +0000 (UTC)
+Received-SPF: Pass (mailfrom) identity=mailfrom; client-ip=209.85.219.73; helo=mail-qv1-f73.google.com; envelope-from=noreply-dmarc-support@google.com; receiver=<UNKNOWN> 
+Authentication-Results: mail.l2-1.ephec-ti.be; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: mail.l2-1.ephec-ti.be;
+	dkim=pass (2048-bit key; unprotected) header.d=google.com header.i=@google.com header.a=rsa-sha256 header.s=20230601 header.b=VMXmvq7j;
+	dkim-atps=neutral
+Received: from mail-qv1-f73.google.com (mail-qv1-f73.google.com [209.85.219.73])
+	by mail.l2-1.ephec-ti.be (Postfix) with ESMTPS id E832C86025;
+	Tue, 16 Apr 2024 10:04:08 +0000 (UTC)
+Received: by mail-qv1-f73.google.com with SMTP id 6a1803df08f44-69b6fe789e9so25688446d6.0;
+        Tue, 16 Apr 2024 03:04:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1713261841; x=1713866641; darn=l2-1.ephec-ti.be;
+        h=content-transfer-encoding:content-disposition:to:from:subject
+         :message-id:date:mime-version:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2WFN7focY830ucZlH30FW7dojFAu1nJRGyRdUvpaQwA=;
+        b=VMXmvq7jKFzkfkIRwYxDRSFRtb6W4RhvNhwxLRTQ1Ft2GeiB2Op4a3P11juW2HhQ6A
+         LshxlaEbE8GH6EKi+1gV21jVnrVMtI3/XxtWjWxFQ8lekhcII26dQ5qaBgXrGllWyBXf
+         3FHDzZzWMSQnZ9P49KsyC9FkpAqQXC5FfNIOfdvhJ0g8vf8IoE/090/joIIDeHR8Nt+/
+         ie3hL5JrgR/1rBEt3+42pfDm88uLqHfesX+5kopmoteUwj9AQ4fEZUiO/l5cHfqzLbpQ
+         orWfZtr7UEV0XQ4zrzW/nAA+Ip56GfsmmfRBZNirCryJmJbGh2jQM4NTbpv5vhNkQ45b
+         6ZMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713261841; x=1713866641;
+        h=content-transfer-encoding:content-disposition:to:from:subject
+         :message-id:date:mime-version:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=2WFN7focY830ucZlH30FW7dojFAu1nJRGyRdUvpaQwA=;
+        b=YA2JnEIQr3NJLV08MniK9aF0Fq5eCtY2zzRcdluPKUdyiSMsopcsix35BrPhHmdQxd
+         ZaMW7qCgp9mVZpMo7+a9mwj4D8IbWbwNQr87XEain11XUjMx6Vu5LM1MDzia8HpX0DM7
+         +lDDANaxxeAwp0wcR5wQfLfQ+DIe8/mwUHJwaAp8M5ZtVJLFeIlki9wmt4SB2xWw3UfJ
+         203mch8ck4a0FmKhXK32aUaHZIo8OgG1vZIVcY16qz9IrhaN5KpwMjPnST5iBgh6z+L+
+         7+jLhhvEa3XcGvWca0zw2lpT+5CfTF5dmztTrI6jCCMtqXxZqBZ1i/Zgp0o6U5pFWK7T
+         PHuQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUD8aVfe+3CUa6dqwgTRUoansb751NnTtnVxlSVpvj+GA5haHKXQ9+qGL2WQBHK9MkgbozzHj9Uw2iRM1FozN5wzgKrtcr0YCEkFfJULZZqRFE+s/b67LrJT+WNhoQ=
+X-Gm-Message-State: AOJu0YwaKUa3EvGPoeFTymH4LDYc5njFjaVs12zqrAx3x1NviIrFsu7s
+	uf+Seg5RjtacIlwFKPxxWltbHjbdTFR4U6hKxz1qB+2Wg+0pZDhYZ6E7rQApn1aEVMc=
+X-Google-Smtp-Source: AGHT+IFAzjWsvi2rsowC1pmQ+j4kRvnX1/ic3myPtOhwvmnI12LpSq8nPCqwL1kcG5eREQsYOAeDnmFOr2D8Yg==
+MIME-Version: 1.0
+X-Received: by 2002:a05:6214:12d8:b0:699:2086:8918 with SMTP id
+ s24-20020a05621412d800b0069920868918mr11945563qvv.47.1713261841066; Tue, 16
+ Apr 2024 03:04:01 -0700 (PDT)
+Date: Mon, 15 Apr 2024 16:59:59 -0700
+Message-ID: <3110724614796485609@google.com>
+Subject: Report domain: l2-1.ephec-ti.be Submitter: google.com Report-ID: 3110724614796485609
+From: noreply-dmarc-support@google.com
+To: sebiche@l2-1.ephec-ti.be, wiwi@l2-1.ephec-ti.be, hneut@l2-1.ephec-ti.be
+Content-Type: application/zip; 
+	name="google.com!l2-1.ephec-ti.be!1713139200!1713225599.zip"
+Content-Disposition: attachment; 
+	filename="google.com!l2-1.ephec-ti.be!1713139200!1713225599.zip"
+Content-Transfer-Encoding: base64
+
+UEsDBAoAAAAIAKdKkFiyj2NC8AEAAMUEAAA1AAAAZ29vZ2xlLmNvbSFsMi0xLmVwaGVjLXRpLmJl
+ITE3MTMxMzkyMDAhMTcxMzIyNTU5OS54bWytVMty4yAQvOcrXL5bSLLlxxYhe9ov2D2rMBpJVCSg
+AOXx9zsEJGudHHLYk6Fnpme6GZk+vY3D5gWsk1o9boss325ACd1I1T1u//z+tTtvN0/sgbYAzZWL
+Z/aw2VALRltfj+B5wz0PGKLadrXiI7BO626ATOiRkgWMOTByOTClkWF43zUjt2LnJhPofq7LYl6q
+efOW10Irz4WvpWo167037gchqTS7lRJOuHKvYEl5OB6rc45cn+sjcZIhG7YvivyEBcXhdDkeztUx
+v1ByC8d0lAq15apLYhC6QicVK07FvthfyhybRWSOg2o+omVZVRekDPdIRv5lW7qtPaVGD1K812a6
+DtL1sAyi0R3FhnJXZGB6EDsvsysgZwzELN48y5FZSuIhgc60H1j4jZDB51BYbNLdzYCbESM8K4K4
+cIiQmpOUieN/NSoaLLSdp7b6dfHF6ckKqKVh1SHbn7Kiysr8jC0XfM4UelLYnZJ4mOHUDl74MKGR
+zRwI7khntJMeFzrNuEZWecEVw53DhMWg5ECbAotLK4l3PfHlZmFUNqC8bCV+TktZD7wBW7dWj1+8
+2Dqa6D6RUD75vrbgpsHfeO9m/tZOpK0PRElguqy0wwDCa8vCB4gGzNfFhXVfuvLnf82wMh3X9E55
+SI4rRcntH+kvUEsBAgoACgAAAAgAp0qQWLKPY0LwAQAAxQQAADUAAAAAAAAAAAAAAAAAAAAAAGdv
+b2dsZS5jb20hbDItMS5lcGhlYy10aS5iZSExNzEzMTM5MjAwITE3MTMyMjU1OTkueG1sUEsFBgAA
+AAABAAEAYwAAAEMCAAAAAA==
