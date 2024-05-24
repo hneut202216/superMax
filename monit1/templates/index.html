@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitoring des VPS</title>
+    <style>
+        table {
+    width: 100%;
+    border-collapse: collapse;
+    }
+
+    th, td {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+th {
+    background-color: #f4f4f4;
+}
+
+.ok {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.nok {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+.green {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.red {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+    </style>
+</head>
+<body>
+    <h1>Monitoring des VPS</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>IP</th>
+                <th>Ping</th>
+                <th>Ports ouverts</th>
+                <th>Groupe</th>
+                <th>Statut HTTP</th>
+                <th>Statut HTTPS</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for result in results %}
+            <tr>
+                <td>{{ result['name'] }}</td>
+                <td>{{ result['ip'] }}</td>
+                <td class="{% if result['ping_status'] == 'OK' %}ok{% else %}nok{% endif %}">{{ result['ping_status'] }}</td>
+                <td>{{ result['open_ports'] }}</td>
+                <td>{{ result['group_name'] }}</td>
+                <td class="{% if result['group_http_status'] == 200 %}green{% else %}red{% endif %}">
+                    {% if result['group_http_status'] is not none %} <a href="http://www.{{ result['group_name'] }}.ephec-ti.be">{{ result['group_http_status'] }}</a> {% endif %}
+                </td>
+                <td class="{% if result['group_https_status'] == 200 %}green{% else %}red{% endif %}">
+                    {% if result['group_https_status'] is not none %} <a href="https://www.{{ result['group_name'] }}.ephec-ti.be">{{ result['group_https_status'] }}</a> {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
+
+
+
+
+
+
+
